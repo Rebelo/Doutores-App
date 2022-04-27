@@ -14,6 +14,7 @@ class FileRepository{
 
   static Future<void> getFiles() async {
 
+    files = [];
 
     //INSS
     final response = await http.post(

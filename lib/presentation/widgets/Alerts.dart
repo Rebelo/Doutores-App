@@ -3,7 +3,6 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../utils/AppWidget.dart';
 import '../../utils/APPColors.dart';
 
-
 class Alerts {
 
   static void showError(BuildContext context, String title, String description, String buttonTitle, IconData icon) {

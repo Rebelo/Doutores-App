@@ -113,20 +113,20 @@ class T2DrawerState extends State<T2Drawer> {
 
           switch (selectedItem) {
             case 1:
-              const HomeScreen().launch(context);
+              Navigator.pushNamed(context, '/home');
               break;
             case 2:
             case 3:
-              const BlogScreen().launch(context);
+            Navigator.pushNamed(context, '/blog');
               break;
             case 4:
-              const NotificationScreen().launch(context);
+              Navigator.pushNamed(context, '/notification');
               break;
             case 5:
               break;
               case 6:
                 finish(context);
-                const LoginScreen().launch(context);
+                Navigator.pushNamed(context, '/');
                 break;
 
           }

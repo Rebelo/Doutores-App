@@ -133,7 +133,7 @@ class HomeScreenState extends State<HomeScreen> {
                           alignment: Alignment.center,
                           child: TextButton(
                             onPressed: (){
-                              BlogScreen().launch(context);
+                              const BlogScreen().launch(context);
                             },
                             child: const Text(
                               'Ver mais...',

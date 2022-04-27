@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/BlogSamplePostModel.dart';
-import '../../logic/cubits/blog/BlogPostsCubit.dart';
 import '../../logic/cubits/blog/BlogPostsState.dart';
 import '../Widgets/BlogComponent.dart';
-import '../../data/repositories/BlogRepository.dart';
 import '../Widgets/Drawer.dart';
 
 class BlogScreen extends StatefulWidget {

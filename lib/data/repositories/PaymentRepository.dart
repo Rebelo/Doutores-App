@@ -15,7 +15,6 @@ class PaymentRepository{
 
   static List<Payment> pagamentosList = [];
 
-
   //this.id, this.dueDate, this.name, this.payDate, this.dueDateDesc, this.description, this.value, this.status, this.issueDateDesc
   static void addToList(String? id, String? name, String? ano, String? mes, String? dia, String? description, String? value, String? status, String? urlPath){
     pagamentosList.add(
@@ -25,6 +24,9 @@ class PaymentRepository{
 
 
   static Future<void> get_payments() async {
+
+    pagamentosList = [];
+
     final response = await http.post(
       Uri.https('api.osayk.com.br', 'api/Companies/GetPaymentInfoProfile'),
       headers: Header.commonHeader(),
@@ -53,9 +55,6 @@ class PaymentRepository{
       );
     }
 
-
-
   }
-
 
 }
