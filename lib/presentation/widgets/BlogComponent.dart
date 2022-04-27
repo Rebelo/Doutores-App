@@ -34,15 +34,13 @@ class BlogComponent extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(child: Text('${mData.title}', style: boldTextStyle(), softWrap: true, maxLines: 3),height: 70,),
+                SizedBox(child: Text('${mData.title}', style: boldTextStyle(), softWrap: true, maxLines: 3),height: 70,),
 
                 8.height,
                 //Text('${mData.categoryName}', style: boldTextStyle(color: BHColorPrimary)),
-                Container(
-                  child: Text(
-                    '${mData.date}',
-                    style: secondaryTextStyle(),
-                  ),
+                Text(
+                  '${mData.date}',
+                  style: secondaryTextStyle(),
                 ),
               ],
             ).expand(flex: 2),

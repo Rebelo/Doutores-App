@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 class BlogSamplePostDataProvider{
@@ -11,7 +12,18 @@ class BlogSamplePostDataProvider{
         scheme: 'https',
         host: 'doutoresdacontabilidade.com.br',
         path: path);
-    return await http.get(httpUri, headers: headers);
+    http.Response response =  await http.get(httpUri, headers: headers);
+
+    try {
+      if (response.statusCode == 200) {
+        var data = parse(response.body);
+        return data;
+      } else {
+        return 'failed';
+      }
+    } catch (e) {
+      return 'failed';
+    }
 
   }
 

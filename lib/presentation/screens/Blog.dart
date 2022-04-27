@@ -16,6 +16,8 @@ class BlogScreen extends StatefulWidget {
 
   const BlogScreen({Key? key}) : super(key: key);
 
+
+
   @override
   BlogScreenState createState() => BlogScreenState();
 }
@@ -23,6 +25,11 @@ class BlogScreen extends StatefulWidget {
 int currentIndex = 0;
 
 class BlogScreenState extends State<BlogScreen> {
+
+  final BlogTecnologiaPostsCubit _blogTecnologiaPostsCubit = BlogTecnologiaPostsCubit();
+  final BlogEmpreendedorismoPostsCubit _blogEmpreendedorismoPostsCubit = BlogEmpreendedorismoPostsCubit();
+  final BlogContabilidadePostsCubit _blogContabilidadePostsCubit = BlogContabilidadePostsCubit();
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -60,6 +67,7 @@ class BlogScreenState extends State<BlogScreen> {
           body: TabBarView(
             children: [
               BlocBuilder<BlogContabilidadePostsCubit, BlogPostsState>(
+                bloc: _blogContabilidadePostsCubit,
                 builder: (context, state) {
 
                   List<BlogSamplePost> posts = [];
@@ -74,6 +82,7 @@ class BlogScreenState extends State<BlogScreen> {
                 },
               ),
               BlocBuilder<BlogEmpreendedorismoPostsCubit, BlogPostsState>(
+                bloc: _blogEmpreendedorismoPostsCubit,
                 builder: (context, state) {
                   List<BlogSamplePost> posts = [];
 
@@ -87,6 +96,7 @@ class BlogScreenState extends State<BlogScreen> {
                 },
               ),
               BlocBuilder<BlogTecnologiaPostsCubit, BlogPostsState>(
+                bloc: _blogTecnologiaPostsCubit,
                 builder: (context, state) {
                   List<BlogSamplePost> posts = [];
 

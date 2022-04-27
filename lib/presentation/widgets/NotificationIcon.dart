@@ -1,9 +1,11 @@
 
+import 'package:doutores_app/logic/cubits/user/UserState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../../logic/cubits/notification/NotificationState.dart';
+import '../../logic/cubits/user/UserCubit.dart';
 import '../Screens/Notifications.dart';
 
 class NotificationIcon extends StatefulWidget {
@@ -17,12 +19,15 @@ class NotificationIcon extends StatefulWidget {
 
 class NotificationIconState extends State<NotificationIcon> {
 
+  final NotificationCubit _notificationCubit = NotificationCubit();
+
+
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        NotificationScreen().launch(context);
+        const NotificationScreen().launch(context);
       },
       child: Container(
         width: 30,
@@ -49,13 +54,14 @@ class NotificationIconState extends State<NotificationIcon> {
                     color: const Color(0xffc32c37),
                     border: Border.all(color: Colors.white, width: 1)),
                 child: Center(
-                  child: BlocBuilder<NotificationCubit, NotificationState>(
+                  child: BlocBuilder<UserCubit, UserState>(
+                    bloc: UserCubit(),
                     builder: (context, state) {
 
                       int counter = 0;
 
-                      if (state is LoadedState) {
-                        counter = state.notifications.length;
+                      if (state is LoadedStateUser) {
+                        counter = state.user.notificatonCounter;
                       }
 
                       return Text(

@@ -13,11 +13,14 @@ class UserCubit extends Cubit<UserState> {
   void login(email, pass) async {
     try {
       emit(LoadingState());
-      if(await UserRepository.login(email, pass) == 201){
+
+      int responseCode = await UserRepository.login(email, pass);
+
+      if(responseCode == 201){
         emit(WrongCredentialsState());
       }
-      else if(await UserRepository.login(email, pass) == 200 && await UserRepository.getLastAccess() == true){
-        emit(LoadedState(UserRepository.user));
+      else if(responseCode == 200 && await UserRepository.getLastAccess() == true){
+        emit(LoadedStateUser(UserRepository.user));
       }
       else {
         emit(ErrorState());

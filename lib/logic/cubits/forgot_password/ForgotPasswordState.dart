@@ -14,12 +14,10 @@ class LoadingState extends ForgotPasswordState {
 }
 
 class LoadedState extends ForgotPasswordState {
-  LoadedState(this.result);
 
-  final bool result;
 
   @override
-  List<Object> get props => [result];
+  List<Object> get props => [];
 }
 
 class WrongEmailState extends ForgotPasswordState {

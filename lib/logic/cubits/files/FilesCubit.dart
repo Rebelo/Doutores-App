@@ -1,17 +1,14 @@
 
-
-
-
 import 'package:doutores_app/data/repositories/FileRepository.dart';
 import 'package:doutores_app/logic/cubits/files/FilesState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilesCubit extends Cubit<FilesState> {
   FilesCubit() : super(InitialState()) {
-    getNotificationsList();
+    getFilesList();
   }
 
-  void getNotificationsList() async {
+  void getFilesList() async {
     try {
       emit(LoadingState());
       await FileRepository.getFiles();

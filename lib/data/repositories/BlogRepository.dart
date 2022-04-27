@@ -2,9 +2,9 @@
 import 'package:doutores_app/data/models/BlogSamplePostModel.dart';
 import 'package:doutores_app/data/dataproviders//BlogSamplePostDP.dart';
 
+
 class BlogRepository{
 
-  String preUrl = "https://doutoresdacontabilidade.com.br/";
   static List<BlogSamplePost> last3Posts = [];
   static List<BlogSamplePost> contabilidadePosts = [];
   static List<BlogSamplePost> empreendedorismoPosts = [];
@@ -12,58 +12,55 @@ class BlogRepository{
 
   static Future<void> getLast3Posts() async {
 
-    List<BlogSamplePost> blogLastPosts = [];
-
     final response = await BlogSamplePostDataProvider.getLastPosts("blog.html");
-    var articles = response.getElementsByTagName("article");
+    if (response is String) {
 
-    for( var i = 0 ; (i < articles.length) && (i < 3); i++ ) {
-      var element = articles[i];
-
-      var title = element.getElementsByTagName("a")[0].attributes['title']?.replaceAll("<br/>", "\n")?.replaceAll("<br />", "\n");
-      var date = element.getElementsByTagName("a")[0].getElementsByTagName("figure")[0].getElementsByTagName("span")[0].text;
-      var image = element.getElementsByTagName("a")[0].getElementsByTagName("figure")[0].getElementsByTagName("img")[0].attributes['src'];
-      var details = element.getElementsByTagName("a")[0].children[2].text;
-      var url = element.getElementsByTagName("a")[0].attributes['href'];
-
-      blogLastPosts.add(
-          BlogSamplePost(
-              categoryName: "",
-              title: title,
-              date: date,
-              imagePath: image,
-              details: details,
-              url: url
-          )
-      );
+    }else{
+      last3Posts = fillObjects(response, 3);
     }
-
-    last3Posts = blogLastPosts;
   }
 
 
   static Future<void> getContabilidadePosts() async {
     final response = await BlogSamplePostDataProvider.getLastPosts("contabilidade.html");
-    test(response, contabilidadePosts);
+    if (response is String) {
+
+    }else{
+      contabilidadePosts = fillObjects(response);
+    }
+
   }
 
   static Future<void> getEmpreendedorismoPosts() async {
     final response = await BlogSamplePostDataProvider.getLastPosts("empreendedorismo.html");
-    test(response, empreendedorismoPosts);
+    if (response is String) {
+
+    }else {
+      empreendedorismoPosts = fillObjects(response);
+    }
   }
 
   static Future<void> getTecnologiaPosts() async {
     final response = await BlogSamplePostDataProvider.getLastPosts("tecnologia-e-o-futuro-dos-negocios.html");
-    test(response, tecnologiaPosts);
+    if (response is String) {
+
+    }else {
+      tecnologiaPosts = fillObjects(response);
+    }
   }
 
 
-  static void test(dynamic response, List<BlogSamplePost> object){
+  static List<BlogSamplePost> fillObjects(dynamic response, [int max = 0]){
     var articles = response.getElementsByTagName("article");
 
     List<BlogSamplePost> posts = [];
 
-    articles.forEach((element) {
+    if(max == 0) {
+      max = articles.length;
+    }
+
+    for (var i = 0; (i < max) && (i < 3); i++) {
+      var element = articles[i];
       var title = element.getElementsByTagName("a")[0].attributes['title'];
       var date = element.getElementsByTagName("a")[0].getElementsByTagName("figure")[0].getElementsByTagName("span")[0].text;
       var image = element.getElementsByTagName("a")[0].getElementsByTagName("figure")[0].getElementsByTagName("img")[0].attributes['src'];
@@ -75,14 +72,14 @@ class BlogRepository{
               categoryName: "",
               title: title,
               date: date,
-              imagePath: image,
+              imagePath: 'https://doutoresdacontabilidade.com.br/' + image,
               details: details,
-              url: url
+              url: 'https://doutoresdacontabilidade.com.br/' + url
           )
       );
-    });
+    }
 
-    object = posts;
+    return posts;
   }
 
 }

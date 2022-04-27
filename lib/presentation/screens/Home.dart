@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/BlogSamplePostModel.dart';
+import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../widgets/NotificationIcon.dart';
 import 'Blog.dart';
 
@@ -27,6 +28,8 @@ class HomeScreen extends StatefulWidget {
 
   const HomeScreen({Key? key}) : super(key: key);
 
+
+
   @override
   HomeScreenState createState() => HomeScreenState();
 }
@@ -34,6 +37,12 @@ class HomeScreen extends StatefulWidget {
 int currentIndex = 0;
 
 class HomeScreenState extends State<HomeScreen> {
+
+  final FilesCubit _filesCubit = FilesCubit();
+  final PaymentCubit _paymentCubit = PaymentCubit();
+  final BlogPostsCubit _blogPostsCubit = BlogPostsCubit();
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -68,107 +77,105 @@ class HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   //color: Colors.lightBlue[0],
                   child: SingleChildScrollView(
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0, top: 15.0),
-                            child: text("Mensalidades", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                          ),
-                          BlocBuilder<PaymentCubit, PaymentState>(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 15.0),
+                          child: text("Mensalidades", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
+                        ),
+                        BlocBuilder<PaymentCubit, PaymentState>(
+                          bloc: _paymentCubit,
+                          builder: (context, state) {
 
-                            builder: (context, state) {
+                            List<Payment> paymentsList = [];
 
-                              List<Payment> paymentsList = [];
+                            if (state is LoadedStatePayment){
+                              paymentsList = state.payments;
+                            }
 
-                              if (state is LoadedStatePayment){
-                                paymentsList = state.payments;
-                              }
+                            return PagamentosComponent(list: paymentsList);
+                          },
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: TextButton(
 
-                              return PagamentosComponent(list: paymentsList);
+                            onPressed: (){
+                              BlogScreen().launch(context);
                             },
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: TextButton(
+                            child: const Text(
+                              'Ver mais...',
 
-                              onPressed: (){
-                                BlogScreen().launch(context);
-                              },
-                              child: const Text(
-                                'Ver mais...',
-
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
-                              ),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0, top: 5.0),
-                            child: text("Impostos", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                          ),
-                          BlocBuilder<FilesCubit, FilesState>(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 5.0),
+                          child: text("Impostos", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
+                        ),
+                        BlocBuilder<FilesCubit, FilesState>(
+                          bloc: _filesCubit,
+                          builder: (context, state) {
 
-                            builder: (context, state) {
+                            List<File> filesList = [];
 
-                              List<File> filesList = [];
+                            if (state is LoadedStateFiles){
+                              filesList = state.files;
+                            }
 
-                              if (state is LoadedStateFiles){
-                                filesList = state.files;
-                              }
-
-                              return DriveComponent(list: filesList);
+                            return DriveComponent(list: filesList);
+                          },
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            onPressed: (){
+                              BlogScreen().launch(context);
                             },
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: TextButton(
-                              onPressed: (){
-                                BlogScreen().launch(context);
-                              },
-                              child: const Text(
-                                'Ver mais...',
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
-                              ),
+                            child: const Text(
+                              'Ver mais...',
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0, top: 5),
-                            child: text("Blog", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                          ),
-                          //BlogComponent(lblogLastPoststory.blogSamplePosts),
-                          BlocBuilder<BlogPostsCubit, BlogPostsState>(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 5),
+                          child: text("Blog", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
+                        ),
+                        BlocBuilder<BlogPostsCubit, BlogPostsState>(
+                          bloc: _blogPostsCubit,
+                          builder: (context, state) {
 
-                            builder: (context, state) {
+                            List<BlogSamplePost> blogsList = [];
 
-                              List<BlogSamplePost> blogsList = [];
+                            if (state is LoadedStateBlog){
+                              blogsList = state.blogSamples;
+                            }
 
-                              if (state is LoadedStateBlog){
-                                blogsList = state.blogSamples;
-                              }
+                            return BlogComponent(blogList: blogsList);
 
-                              return BlogComponent(blogList: blogsList);
+                          },
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            onPressed: (){
+                              const BlogScreen().launch(context);
                             },
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: TextButton(
-                              onPressed: (){
-                                BlogScreen().launch(context);
-                              },
-                              child: const Text(
-                                'Ver mais...',
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
-                              ),
+                            child: const Text(
+                              'Ver mais...',
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

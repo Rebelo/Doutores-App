@@ -3,6 +3,7 @@
 
 import 'package:doutores_app/logic/cubits/user/UserCubit.dart';
 import 'package:doutores_app/logic/cubits/user/UserState.dart';
+import 'package:doutores_app/presentation/screens/Home.dart';
 import 'package:doutores_app/presentation/widgets/Alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,11 +47,15 @@ class LoginScreenState extends State<LoginScreen> {
         backgroundColor: APPColorPrimary,
         body: BlocListener<UserCubit, UserState>(
           listener: (context, state) {
-            if (state is LoadedState){
-
+            if (state is LoadedStateUser){
+              finish(context);
+              Navigator.pushNamed(context, '/home');
             }
             if (state is ErrorState){
               Alerts.showError(context, "Não conseguimos fazer login", "Não conseguimos fazer login nesse momento, tente novamente ma", "ok", Icons.access_alarms);
+            }
+            if (state is WrongCredentialsState){
+              Alerts.showError(context, "Dados incorretos", "Senha e/ou email estão incorretos", "ok", Icons.access_alarms);
             }
           },
           child: Stack(
@@ -148,7 +153,7 @@ class LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: GestureDetector(
                             onTap: () {
-                              const BHForgotPasswordScreen().launch(context);
+                              const ForgotPasswordScreen().launch(context);
                             },
                             child: const Text('Esqueceu sua senha?',
                                 style: TextStyle(
@@ -168,7 +173,10 @@ class LoginScreenState extends State<LoginScreen> {
                             ),
 
                             onPressed: () {
-                              BlocProvider.of<UserCubit>(context).login(emailCont.text, passwordCont.text);
+                              if (_formKey.currentState!.validate()) {
+                                BlocProvider.of<UserCubit>(context).login(emailCont.text, passwordCont.text);
+                              }
+
                             },
 
                             child: const Text(

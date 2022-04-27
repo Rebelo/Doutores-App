@@ -1,16 +1,19 @@
 
+import 'package:doutores_app/logic/cubits/forgot_password/ForgotPasswordCubit.dart';
+import 'package:doutores_app/logic/cubits/forgot_password/ForgotPasswordState.dart';
+import 'package:doutores_app/presentation/screens/Login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Widgets/Alerts.dart';
-import '../Widgets/Buttons.dart';
 import '../../utils/APPColors.dart';
 import '../../utils/APPConstants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 
-class BHForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   static String tag = '/ForgotPasswordScreen';
 
-  const BHForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override
   BHForgotPasswordScreenState createState() => BHForgotPasswordScreenState();
@@ -18,7 +21,7 @@ class BHForgotPasswordScreen extends StatefulWidget {
 
 final _formKey = GlobalKey<FormState>();
 
-class BHForgotPasswordScreenState extends State<BHForgotPasswordScreen> {
+class BHForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   TextEditingController emailController = TextEditingController();
 
   @override
@@ -26,96 +29,113 @@ class BHForgotPasswordScreenState extends State<BHForgotPasswordScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: APPColorPrimary,
-        body: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                onPressed: () {
-                  finish(context);
-                },
-                icon: const Icon(Icons.arrow_back, color: whiteColor),
+        body: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
+          listener: (context, state) {
+            if (state is LoadedState){
+              finish(context);
+              const LoginScreen().launch(context);
+            }
+            if (state is ErrorState){
+              Alerts.showError(context, "Falha", "Não conseguimos pedir uma nova senha, tente novamente mais tarde", "ok", Icons.access_alarms);
+            }
+            if (state is WrongEmailState){
+              Alerts.showError(context, "Falha", "Email não cadastrado no sistema", "ok", Icons.access_alarms);
+            }
+          },
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  onPressed: () {
+                    finish(context);
+                  },
+                  icon: const Icon(Icons.arrow_back, color: whiteColor),
+                ),
               ),
-            ),
-            Positioned(
-              top: 70,
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15)),
-                    color: whiteColor,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(ForgotPwd,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: APPTextColorPrimary)),
-                      16.height,
-                      const Text(ForgotPasswordSubTitle,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: APPTextColorSecondary, fontSize: 14)),
-                      8.height,
-                      TextFormField(
-                        controller: emailController,
-                        keyboardType: TextInputType.text,
-                        style: const TextStyle(color: blackColor),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Digite seu e-mail';
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: APPDividerColor)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: APPDividerColor)),
-                          labelText: "E-mail",
-                          labelStyle:
-                              TextStyle(color: APPGreyColor, fontSize: 14),
+              Positioned(
+                top: 70,
+                child: Form(
+                  key: _formKey,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          topLeft: Radius.circular(15)),
+                      color: whiteColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(ForgotPwd,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: APPTextColorPrimary)),
+                        16.height,
+                        const Text(ForgotPasswordSubTitle,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: APPTextColorSecondary, fontSize: 14)),
+                        8.height,
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.text,
+                          style: const TextStyle(color: blackColor),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Digite seu e-mail';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: APPDividerColor)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: APPDividerColor)),
+                            labelText: "E-mail",
+                            labelStyle:
+                                TextStyle(color: APPGreyColor, fontSize: 14),
+                          ),
                         ),
-                      ),
-                      16.height,
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Buttons.width_button(() async {
-                          if (_formKey.currentState!.validate()) {
-/*
-                            var response = await Login.post_forgot_password(emailController.text);
+                        16.height,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(12),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              primary: APPColorSecondary,
+                            ),
 
-                            Map jsonData = jsonDecode(response.body);
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                BlocProvider.of<ForgotPasswordCubit>(context).ask(emailController.text);
+                              }
 
-                            Alert.showError(context, "teste", "teste", "teste", Icons.warning);
+                            },
 
-                            if (jsonData['result'] == "Success") {
-                              finish(context);
-                              const LoginScreen().launch(context);
+                            child: const Text(
+                              BtnSend,
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
 
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  'Email não cadastrado no nosso sistema.')));
-                            }*/
-                          }
-
-                        }),
-                      ),
-                    ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

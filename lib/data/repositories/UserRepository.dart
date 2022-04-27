@@ -50,6 +50,7 @@ class UserRepository{
     final parsedJson = json.decode(response.body)[0];
     user.companyToken = parsedJson['token'];
     user.isBlock = parsedJson['isBlock'];
+    user.notificatonCounter = parsedJson['numberNotificationsToAccountant'];
     //NotificationRepository.setCount(parsedJson['numberNotificationsToAccountant']);
 
     if(response.statusCode == 200){
@@ -61,7 +62,7 @@ class UserRepository{
   }
 
 
-  static Future<bool> askNewPassword(String email) async {
+  static Future<int> askNewPassword(String email) async {
     var response = await http.post(
       Uri.https('api.osayk.com.br', 'api/Registration/RemindPassword'),
       headers: Header.commonHeader(),
@@ -71,11 +72,7 @@ class UserRepository{
       }),
     );
 
-    if(response.statusCode == 200){
-      return true;
-    }else {
-      return false;
-    }
+    return response.statusCode;
 
   }
 

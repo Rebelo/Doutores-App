@@ -10,6 +10,7 @@ class User {
   String email = "";
   String emailCompl = "";
   bool isBlock = true;
+  int notificatonCounter = 0;
 
 }
 

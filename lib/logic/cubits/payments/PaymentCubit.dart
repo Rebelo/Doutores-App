@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
   PaymentCubit() : super(InitialState()) {
-    getNotificationsList();
+    getPaymentsList();
   }
 
-  void getNotificationsList() async {
+  void getPaymentsList() async {
     try {
       emit(LoadingState());
       await PaymentRepository.get_payments();

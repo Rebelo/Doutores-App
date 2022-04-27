@@ -15,8 +15,8 @@ class LoadingState extends UserState {
   List<Object> get props => [];
 }
 
-class LoadedState extends UserState {
-  LoadedState(this.user);
+class LoadedStateUser extends UserState {
+  LoadedStateUser(this.user);
 
   final User user;
 
