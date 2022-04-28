@@ -51,7 +51,6 @@ class UserRepository{
     user.companyToken = parsedJson['token'];
     user.isBlock = parsedJson['isBlock'];
     user.notificatonCounter = parsedJson['numberNotificationsToAccountant'];
-    //NotificationRepository.setCount(parsedJson['numberNotificationsToAccountant']);
 
     if(response.statusCode == 200){
       return true;

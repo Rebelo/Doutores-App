@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../utils/Header.dart';
+import '../dataproviders/NotificationDP.dart';
 import '../models/NotificationModel.dart';
 
 
@@ -12,42 +13,24 @@ import '../models/NotificationModel.dart';
 class NotificationRepository{
 
   static List<NotificationModel> notifications = [];
-  static int notificationsCount = 0;
 
-
-
-  static void addNotification(String date, String message){
-    NotificationModel n = NotificationModel(date, message);
-    notifications.add(n);
-    notificationsCount++;
-  }
-
-  static void setCount(int num){
-    notificationsCount = num;
-  }
-
-  static int getNewNotificationsCount(){
-    return notificationsCount;
-  }
 
   static Future<void> getUnpresented() async {
 
+    notifications = [];
 
-    final response = await http.get(
-        Uri.https('api.osayk.com.br', 'api/notifications/GetUnpresented'),
-        headers: Header.commonHeader()
-    );
+    final response = await NotificationDataProvider.getUnpresented();
 
     List<dynamic> myMap = json.decode(response.body);
     myMap.forEach((element) {
       String x = element['message'].replaceAll("Drive", "sistema");
-      String y = x.split(".")[0] + x.split(".")[1];
+      String message = x.split(".")[0] + x.split(".")[1];
       String date = element['date'].split("T")[0];
       String time = element['date'].split("T")[1];
       String dateTime = time +" - "+ date.split("-")[2] +"/"+ date.split("-")[1] +"/"+ date.split("-")[0];
 
-
-      addNotification(dateTime, y);
+      NotificationModel n = NotificationModel(dateTime, message);
+      notifications.add(n);
     });
 
   }
@@ -61,10 +44,16 @@ class NotificationRepository{
     );
 
     if (response.statusCode != 200){
-      //HomeScreen.zeroCounter();
+      //todo
     }
 
   }
+
+  static void addNotification(String date, String message){
+    NotificationModel n = NotificationModel(date, message);
+    notifications.add(n);
+  }
+
 }
 
 

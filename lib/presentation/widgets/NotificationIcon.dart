@@ -1,11 +1,10 @@
 
-import 'package:doutores_app/logic/cubits/user/UserState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
+import '../../data/models/NotificationModel.dart';
 import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../../logic/cubits/notification/NotificationState.dart';
-import '../../logic/cubits/user/UserCubit.dart';
 import '../Screens/Notifications.dart';
 
 class NotificationIcon extends StatefulWidget {
@@ -21,13 +20,11 @@ class NotificationIconState extends State<NotificationIcon> {
 
   final NotificationCubit _notificationCubit = NotificationCubit();
 
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        const NotificationScreen().launch(context);
+        Navigator.pushNamed(context, '/notification');
       },
       child: Container(
         width: 30,
@@ -54,18 +51,18 @@ class NotificationIconState extends State<NotificationIcon> {
                     color: const Color(0xffc32c37),
                     border: Border.all(color: Colors.white, width: 1)),
                 child: Center(
-                  child: BlocBuilder<UserCubit, UserState>(
-                    bloc: UserCubit(),
+                  child: BlocBuilder<NotificationCubit, NotificationState>(
+                    bloc: _notificationCubit,
                     builder: (context, state) {
 
-                      int counter = 0;
+                      List<NotificationModel> counter = [];
 
-                      if (state is LoadedStateUser) {
-                        counter = state.user.notificatonCounter;
+                      if (state is LoadedState) {
+                        counter = state.notifications;
                       }
 
                       return Text(
-                        counter.toString(),
+                        counter.length.toString(),
                         style: const TextStyle(fontSize: 10),
                       );
                     },

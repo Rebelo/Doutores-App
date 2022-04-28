@@ -7,7 +7,7 @@ import '../../utils/Header.dart';
 
 class NotificationDataProvider{
 
-  Future<http.Response> getUnpresented() async {
+  static Future<http.Response> getUnpresented() async {
 
     return await http.get(
         Uri.https('api.osayk.com.br', 'api/notifications/GetUnpresented'),
@@ -16,7 +16,7 @@ class NotificationDataProvider{
 
   }
 
-  Future<http.Response> markAsPresented() async {
+  static Future<http.Response> markAsPresented() async {
 
     return await http.post(
         Uri.https('api.osayk.com.br', 'api/notifications/MarkPresented'),

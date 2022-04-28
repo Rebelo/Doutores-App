@@ -43,6 +43,7 @@ class HomeScreenState extends State<HomeScreen> {
   final BlogPostsCubit _blogPostsCubit = BlogPostsCubit();
 
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -102,7 +103,7 @@ class HomeScreenState extends State<HomeScreen> {
                           child: TextButton(
 
                             onPressed: (){
-                              BlogScreen().launch(context);
+                              const BlogScreen().launch(context);
                             },
                             child: const Text(
                               'Ver mais...',

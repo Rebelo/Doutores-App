@@ -1,7 +1,10 @@
 
 import 'package:doutores_app/data/repositories/NotificationRepository.dart';
 import 'package:doutores_app/data/models/NotificationModel.dart';
+import 'package:doutores_app/logic/cubits/notification/NotificationCubit.dart';
+import 'package:doutores_app/logic/cubits/notification/NotificationState.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -17,7 +20,6 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class CPNotificationFragmentState extends State<NotificationScreen> {
-  List<NotificationModel> notification = NotificationRepository.notifications;
 
   @override
   void initState() {
@@ -36,6 +38,7 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     var width = MediaQuery.of(context).size.width;
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
@@ -99,60 +102,72 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
                 ),
               ],
             ),
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: notification.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                NotificationModel data = notification[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 5,
-                          height: 5,
-                          decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-                        ),
-                      ),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        padding: const EdgeInsets.all(8),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.lightBlueAccent),
-                        child: SvgPicture.asset("assets/images/invoice-8856.svg", height: width / 7.5, width: width / 7.5, fit: BoxFit.cover),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                              data.date!,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: boldTextStyle(size: 14),
+            BlocBuilder<NotificationCubit, NotificationState>(
+              bloc: NotificationCubit(),
+              builder: (context, state) {
+
+                List<NotificationModel> notificationsList = [];
+
+                if (state is LoadedState){
+                  notificationsList = state.notifications;
+                }
+
+                return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: notificationsList.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    NotificationModel data = notificationsList[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 5,
+                              height: 5,
+                              decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
                             ),
-                            const SizedBox(height: 4, width: 16),
-                            Text(
-                              data.message!,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: secondaryTextStyle(size: 12),
+                          ),
+                          Container(
+                            height: 40,
+                            width: 40,
+                            padding: const EdgeInsets.all(8),
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.lightBlueAccent),
+                            child: SvgPicture.asset("assets/images/invoice-8856.svg", height: width / 7.5, width: width / 7.5, fit: BoxFit.cover),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  data.date!,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: boldTextStyle(size: 14),
+                                ),
+                                const SizedBox(height: 4, width: 16),
+                                Text(
+                                  data.message!,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: secondaryTextStyle(size: 12),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),
