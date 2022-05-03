@@ -8,7 +8,7 @@ class InitialState extends BlogPostsState {
   @override
   List<Object>  get props => [];
 }
-class LoadingState extends BlogPostsState {
+class LoadingStateBlog extends BlogPostsState {
   @override
   List<Object> get props => [];
 }

@@ -7,7 +7,7 @@ class InitialState extends FilesState {
   @override
   List<Object> get props => [];
 }
-class LoadingState extends FilesState {
+class LoadingStateFiles extends FilesState {
   @override
   List<Object> get props => [];
 }

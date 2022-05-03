@@ -16,7 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/BlogSamplePostModel.dart';
-import '../../logic/cubits/notification/NotificationCubit.dart';
+import '../widgets/LoadingDialog.dart';
 import '../widgets/NotificationIcon.dart';
 import 'Blog.dart';
 
@@ -42,18 +42,20 @@ class HomeScreenState extends State<HomeScreen> {
   final PaymentCubit _paymentCubit = PaymentCubit();
   final BlogPostsCubit _blogPostsCubit = BlogPostsCubit();
 
-
-
   @override
   Widget build(BuildContext context) {
 
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.lightBlue[10],
       appBar: AppBar(
-        title: Text('Início', style: boldTextStyle(color: black)),
+        title: const Text('Início',  style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+        color: Colors.black87),),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -66,6 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: white,
       ),
       body: SafeArea(
+
           left: true,
           top: true,
           right: true,
@@ -73,6 +76,7 @@ class HomeScreenState extends State<HomeScreen> {
           minimum: const EdgeInsets.all(2.0),
           child: Observer(
             builder: (_) => Stack(
+
               fit: StackFit.expand,
               children: [
                 Expanded(
@@ -81,100 +85,115 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
+                        /*Padding(
                           padding: const EdgeInsets.only(left: 10.0, top: 15.0),
                           child: text("Mensalidades", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                        ),
+                        ),*/
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Mensalidades', style: boldTextStyle(size: 24)),
+                            Text('Mostrar Mais', style: boldTextStyle(color: Colors.blue)).onTap(
+                                  () {
+                                Navigator.pushNamed(context, '/blog');
+                              },
+                            ),
+                          ],
+                        ).paddingOnly(left: 16, right: 16, top: 25, bottom: 20),
+
                         BlocBuilder<PaymentCubit, PaymentState>(
                           bloc: _paymentCubit,
                           builder: (context, state) {
 
                             List<Payment> paymentsList = [];
 
-                            if (state is LoadedStatePayment){
-                              paymentsList = state.payments;
+                            if (state is LoadingStatePayment){
+                              return LoadingDialog.showLittleLoading();
                             }
 
-                            return PagamentosComponent(list: paymentsList);
+                            if (state is LoadedStatePayment){
+                              paymentsList = state.payments;
+                              return PagamentosComponent(paymList: paymentsList, size: 3);
+                            }
+
+
+                            return const Center(child: Text('Sem Dados'));
                           },
+                        ),10.height,
+                        const Divider(
+                          color: Colors.black26,
+                          thickness: 0,
+                          height: 5,
+                          indent: 50,
+                          endIndent: 50,
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: TextButton(
-
-                            onPressed: (){
-                              const BlogScreen().launch(context);
-                            },
-                            child: const Text(
-                              'Ver mais...',
-
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
+                        10.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Impostos', style: boldTextStyle(size: 24)),
+                            Text('Mostrar Mais', style: boldTextStyle(color: Colors.blue)).onTap(
+                                  () {
+                                Navigator.pushNamed(context, '/blog');
+                              },
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, top: 5.0),
-                          child: text("Impostos", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                        ),
+                          ],
+                        ).paddingOnly(left: 16, right: 16, top: 16, bottom: 0),
                         BlocBuilder<FilesCubit, FilesState>(
                           bloc: _filesCubit,
                           builder: (context, state) {
 
                             List<File> filesList = [];
 
-                            if (state is LoadedStateFiles){
-                              filesList = state.files;
+                            if (state is LoadingStateFiles){
+                              return LoadingDialog.showLittleLoading();
                             }
 
-                            return DriveComponent(list: filesList);
+                            if (state is LoadedStateFiles){
+                              filesList = state.files;
+                              return DriveComponent(filesList: filesList, size: 3);
+                            }
+
+                            return const Center(child: Text('Sem Dados'));
                           },
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: TextButton(
-                            onPressed: (){
-                              const BlogScreen().launch(context);
-                            },
-                            child: const Text(
-                              'Ver mais...',
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
+                        ),2.height,
+                      const Divider(
+                        color: Colors.black26,
+                        thickness: 0,
+                        height: 5,
+                        indent: 50,
+                        endIndent: 50,
+                      ),
+                      10.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Blog', style: boldTextStyle(size: 24)),
+                            Text('Mostrar Mais', style: boldTextStyle(color: Colors.blue)).onTap(
+                                  () {
+                                    Navigator.pushNamed(context, '/blog');
+                              },
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, top: 5),
-                          child: text("Blog", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                        ),
+                          ],
+                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 16),
                         BlocBuilder<BlogPostsCubit, BlogPostsState>(
                           bloc: _blogPostsCubit,
                           builder: (context, state) {
 
                             List<BlogSamplePost> blogsList = [];
 
-                            if (state is LoadedStateBlog){
-                              blogsList = state.blogSamples;
+                            if(state is LoadingStateBlog){
+                              return LoadingDialog.showLittleLoading();
                             }
 
-                            return BlogComponent(blogList: blogsList);
+                            if (state is LoadedStateBlog){
+                              blogsList = state.blogSamples;
+                              return BlogComponent(blogList: blogsList);
+                            }
+
+                            return const Center(child: Text('Sem Dados'));
 
                           },
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: TextButton(
-                            onPressed: (){
-                              const BlogScreen().launch(context);
-                            },
-                            child: const Text(
-                              'Ver mais...',
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.blueAccent),
-                            ),
-                          ),
                         ),
                       ],
                     ),

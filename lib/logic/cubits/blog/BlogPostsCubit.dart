@@ -10,7 +10,7 @@ class BlogPostsCubit extends Cubit<BlogPostsState> {
 
   void getBlogPostsList() async {
     try {
-      emit(LoadingState());
+      emit(LoadingStateBlog());
       await BlogRepository.getLast3Posts();
       emit(LoadedStateBlog(BlogRepository.last3Posts));
     } catch (e) {

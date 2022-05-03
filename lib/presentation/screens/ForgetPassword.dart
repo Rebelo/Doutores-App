@@ -9,6 +9,8 @@ import '../../utils/APPColors.dart';
 import '../../utils/APPConstants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../widgets/LoadingDialog.dart';
+
 
 class ForgotPasswordScreen extends StatefulWidget {
   static String tag = '/ForgotPasswordScreen';
@@ -31,6 +33,9 @@ class BHForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         backgroundColor: APPColorPrimary,
         body: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
           listener: (context, state) {
+            if(state is LoadingState){
+              LoadingDialog.showLoadingDialog(context);
+            }
             if (state is LoadedState){
               finish(context);
               const LoginScreen().launch(context);

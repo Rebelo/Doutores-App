@@ -11,7 +11,7 @@ class BlogComponent extends StatelessWidget {
 
   final List<BlogSamplePost> blogList;
 
-  BlogComponent({required this.blogList});
+  const BlogComponent({Key? key, required this.blogList}) : super(key: key);
 
   void _launchURL(url) async {
     if (!await launch(url)) throw 'Could not launch url';
@@ -34,7 +34,7 @@ class BlogComponent extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(child: Text('${mData.title}', style: boldTextStyle(), softWrap: true, maxLines: 3),height: 70,),
+                SizedBox(child: Text('${mData.title}', style: boldTextStyle(), softWrap: true, maxLines: 4),height: 75,),
 
                 8.height,
                 //Text('${mData.categoryName}', style: boldTextStyle(color: BHColorPrimary)),

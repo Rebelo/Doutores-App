@@ -9,7 +9,7 @@ class BlogContabilidadePostsCubit extends Cubit<BlogPostsState> {
 
   void getBlogPostsList() async {
     try {
-      emit(LoadingState());
+      emit(LoadingStateBlog());
       await BlogRepository.getContabilidadePosts();
       emit(LoadedStateBlog(BlogRepository.contabilidadePosts));
     } catch (e) {

@@ -10,7 +10,7 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   void getPaymentsList() async {
     try {
-      emit(LoadingState());
+      emit(LoadingStatePayment());
       await PaymentRepository.get_payments();
       emit(LoadedStatePayment(PaymentRepository.pagamentosList));
     } catch (e) {

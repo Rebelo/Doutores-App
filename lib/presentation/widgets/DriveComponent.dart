@@ -11,9 +11,10 @@ import '../../utils/AppWidget.dart';
 
 class DriveComponent extends StatefulWidget {
   static String tag = '/DriveComponent';
-  final postsList = FileRepository.files;
+  final List<File> filesList;
+  final int size;
 
-  DriveComponent({Key? key, required List<File> list}) : super(key: key);
+  const DriveComponent({Key? key, required this.filesList, this.size = 0}) : super(key: key);
 
   @override
   DriveComponentState createState() => DriveComponentState();
@@ -39,13 +40,28 @@ class DriveComponentState extends State<DriveComponent> {
 
   @override
   Widget build(BuildContext context) {
+
+    int len = 0;
+
+    if(widget.size == 0 || widget.size > widget.filesList.length){
+      len = widget.filesList.length;
+    }else{
+      len = widget.size;
+    }
+
+    /*widget.filesList.sort((a, b){ //sorting in descending order
+      return DateTime.parse(b.dueDate!).compareTo(DateTime.parse(a.dueDate!));
+    });*/
+
+    widget.filesList.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
+
     return ListView.separated(
       shrinkWrap: true,
-      physics: ScrollPhysics(),
-      itemCount: widget.postsList.length,
-      padding: EdgeInsets.all(16),
+      physics: const ScrollPhysics(),
+      itemCount: len,
+      padding: const EdgeInsets.all(16),
       itemBuilder: (context, index) {
-        File mData = widget.postsList[index];
+        File mData = widget.filesList[index];
         var width = MediaQuery.of(context).size.width;
         return Column(
           children: <Widget>[
@@ -55,17 +71,29 @@ class DriveComponentState extends State<DriveComponent> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      text(mData.mes ?? "", fontSize: 14.0),
-                      text(mData.dia ?? "", fontSize: 14.0),
+                      Text(
+                        mData.dia ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        mData.mes ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
                   Container(
                     decoration: boxDecoration(radius: 8, showShadow: true, bgColor: Colors.white),
-                    margin: EdgeInsets.only(left: 16, right: 16),
+                    margin: const EdgeInsets.only(left: 16, right: 16),
                     width: width / 6,
                     height: width / 6,
-                    padding: EdgeInsets.all(width / 60),
-                    child:  SvgPicture.asset("assets/images/Icon-DARF-PREVIDENCIARIO.svg", height: width / 7.5, width: width / 7.5),
+                    padding: EdgeInsets.all(width / 80),
+                    child:  SvgPicture.asset("assets/images/cash.svg", height: width / 10, width: width / 10),
 
                   ),
                   Expanded(
@@ -75,13 +103,25 @@ class DriveComponentState extends State<DriveComponent> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            text(mData.name ?? "", fontSize: 14.0),
+                            Text(
+                              mData.name.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
                             const SizedBox(height: 0, width: 15),
-                            text("R\$"+mData.value.toString() ?? "", fontSize: 14.0)
+                            Text(
+                              "R\$"+mData.value.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
-                        text("Referência: " + mData.referenceMonth! + "/" + mData.referenceYear!, fontSize: 12.0)
+                        text("Ref.: " + mData.referenceMonth! + "/" + mData.referenceYear!, fontSize: 12.0)
                       ],
                     ),
                   )

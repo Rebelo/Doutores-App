@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../Widgets/Drawer.dart';
+import '../widgets/LoadingDialog.dart';
 
 class NotificationScreen extends StatefulWidget {
   final bool isNotification;
@@ -107,6 +108,10 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
               builder: (context, state) {
 
                 List<NotificationModel> notificationsList = [];
+
+                if(state is LoadingState){
+                  LoadingDialog.showLoadingDialog(context);
+                }
 
                 if (state is LoadedState){
                   notificationsList = state.notifications;

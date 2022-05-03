@@ -30,6 +30,7 @@ class ErrorState extends UserState {
 }
 
 class WrongCredentialsState extends UserState {
+
   @override
   List<Object> get props => [];
 }

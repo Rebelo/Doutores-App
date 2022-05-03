@@ -10,9 +10,11 @@ import '../../utils/AppWidget.dart';
 
 class PagamentosComponent extends StatefulWidget {
   static String tag = '/PagamentosComponent';
-  final pagssList = PaymentRepository.pagamentosList;
+  final List<Payment> paymList;
+  final int size;
 
-  PagamentosComponent({Key? key, required List<Payment> list}) : super(key: key);
+  const PagamentosComponent({Key? key, required this.paymList, this.size = 0}) : super(key: key);
+
 
   @override
   PagamentosComponentState createState() => PagamentosComponentState();
@@ -38,13 +40,23 @@ class PagamentosComponentState extends State<PagamentosComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+
+    int len = 0;
+
+    if(widget.size == 0){
+      len = widget.paymList.length;
+    }else{
+      len = widget.size;
+    }
+
+
+    return widget.paymList.length == 0 ? const Center(child: Text('Sem Dados')) : ListView.separated(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
-      itemCount: widget.pagssList.length,
+      itemCount: len,
       padding: const EdgeInsets.all(10),
       itemBuilder: (context, index) {
-        Payment mData = widget.pagssList[index];
+        Payment mData = widget.paymList[index];
         var width = MediaQuery.of(context).size.width;
         return Column(
           children: <Widget>[

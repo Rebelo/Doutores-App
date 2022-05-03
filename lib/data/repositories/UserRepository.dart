@@ -13,13 +13,16 @@ class UserRepository{
 
   static User user = User();
 
-  static Future<int> login(String _email, String pass) async {
+  static Future<String> login(String _email, String pass) async {
 
     var response = await UserDataProvider.postLogin(_email, pass);
 
-
-
     final parsedJson = jsonDecode(response.body);
+
+    if(parsedJson['result'] != "Success"){
+      return parsedJson['result'];
+    }
+
     final userInfo = parsedJson['userInfo'];
     var email = "";
     var email2 = "";
@@ -38,7 +41,7 @@ class UserRepository{
     user.email = email;
     user.emailCompl = email2;
 
-    return response.statusCode;
+    return parsedJson['result'];
   }
 
   static Future<bool> getLastAccess() async {

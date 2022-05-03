@@ -10,9 +10,10 @@ class File {
   String? referenceMonth = "";
   String? type = "";
   String? value = "";
+  String? dueDate = "";
 
 
 
   File(this.urlPath, this.name, this.dia, this.mes, this.referenceYear,
-      this.referenceMonth, this.type, this.value);
+      this.referenceMonth, this.type, this.value, this.dueDate);
 }

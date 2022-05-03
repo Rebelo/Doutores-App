@@ -67,10 +67,15 @@ class BlogRepository{
       var details = element.getElementsByTagName("a")[0].children[2].text;
       var url = element.getElementsByTagName("a")[0].attributes['href'];
 
+      var result = title.replaceAll("<br/> ","\n");
+      result = result.replaceAll("<br /> ","\n");
+      result = result.replaceAll("<br> ","\n");
+      result = result.replaceAll("<br > ","\n");
+
       posts.add(
           BlogSamplePost(
               categoryName: "",
-              title: title,
+              title: result,
               date: date,
               imagePath: 'https://doutoresdacontabilidade.com.br/' + image,
               details: details,

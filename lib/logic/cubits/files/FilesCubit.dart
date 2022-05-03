@@ -10,7 +10,7 @@ class FilesCubit extends Cubit<FilesState> {
 
   void getFilesList() async {
     try {
-      emit(LoadingState());
+      emit(LoadingStateFiles());
       await FileRepository.getFiles();
       emit(LoadedStateFiles(FileRepository.files));
     } catch (e) {

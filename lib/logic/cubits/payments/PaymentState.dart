@@ -10,7 +10,7 @@ class InitialState extends PaymentState {
   @override
   List<Object> get props => [];
 }
-class LoadingState extends PaymentState {
+class LoadingStatePayment extends PaymentState {
   @override
   List<Object> get props => [];
 }

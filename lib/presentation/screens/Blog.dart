@@ -8,6 +8,7 @@ import '../../data/models/BlogSamplePostModel.dart';
 import '../../logic/cubits/blog/BlogPostsState.dart';
 import '../Widgets/BlogComponent.dart';
 import '../Widgets/Drawer.dart';
+import '../widgets/LoadingDialog.dart';
 
 class BlogScreen extends StatefulWidget {
   static var tag = "/Blog";
@@ -97,6 +98,10 @@ class BlogScreenState extends State<BlogScreen> {
                 bloc: _blogTecnologiaPostsCubit,
                 builder: (context, state) {
                   List<BlogSamplePost> posts = [];
+
+                  if(state is LoadingStateBlog){
+                    LoadingDialog.showLoadingDialog(context);
+                  }
 
                   if (state is LoadedStateBlog) {
                     posts = state.blogSamples;

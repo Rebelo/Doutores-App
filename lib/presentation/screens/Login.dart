@@ -5,6 +5,7 @@ import 'package:doutores_app/logic/cubits/user/UserCubit.dart';
 import 'package:doutores_app/logic/cubits/user/UserState.dart';
 import 'package:doutores_app/presentation/screens/Home.dart';
 import 'package:doutores_app/presentation/widgets/Alerts.dart';
+import 'package:doutores_app/presentation/widgets/LoadingDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -47,14 +48,19 @@ class LoginScreenState extends State<LoginScreen> {
         backgroundColor: APPColorPrimary,
         body: BlocListener<UserCubit, UserState>(
           listener: (context, state) {
+            if(state is LoadingState){
+              LoadingDialog.showLoadingDialog(context);
+            }
             if (state is LoadedStateUser){
               finish(context);
               Navigator.pushNamed(context, '/home');
             }
             if (state is ErrorState){
+              Navigator.of(context).pop();
               Alerts.showError(context, "Não conseguimos fazer login", "Não conseguimos fazer login nesse momento, tente novamente ma", "ok", Icons.access_alarms);
             }
             if (state is WrongCredentialsState){
+              Navigator.of(context).pop();
               Alerts.showError(context, "Dados incorretos", "Senha e/ou email estão incorretos", "ok", Icons.access_alarms);
             }
           },
