@@ -4,7 +4,7 @@ import '../../../data/models/BlogSamplePostModel.dart';
 
 abstract class BlogPostsState extends Equatable {}
 
-class InitialState extends BlogPostsState {
+class InitialStateBlog extends BlogPostsState {
   @override
   List<Object>  get props => [];
 }

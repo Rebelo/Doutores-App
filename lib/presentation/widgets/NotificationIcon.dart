@@ -5,7 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/NotificationModel.dart';
 import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../../logic/cubits/notification/NotificationState.dart';
-import '../Screens/Notifications.dart';
+import '../../utils/APPColors.dart';
 
 class NotificationIcon extends StatefulWidget {
   static String tag = '/NotificationTag';
@@ -18,10 +18,12 @@ class NotificationIcon extends StatefulWidget {
 
 class NotificationIconState extends State<NotificationIcon> {
 
-  final NotificationCubit _notificationCubit = NotificationCubit();
+
 
   @override
   Widget build(BuildContext context) {
+    final _notificationCubit = BlocProvider.of<NotificationCubit>(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/notification');
@@ -35,7 +37,7 @@ class NotificationIconState extends State<NotificationIcon> {
           children: [
             const Icon(
               Icons.notifications,
-              color: Colors.black,
+              color: APPBackGroundColor,
               size: 30,
             ),
             Container(

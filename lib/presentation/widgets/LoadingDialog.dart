@@ -1,3 +1,4 @@
+import 'package:doutores_app/utils/APPColors.dart';
 import 'package:flutter/material.dart';
 
 class LoadingDialog {
@@ -7,7 +8,7 @@ class LoadingDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: APPBackGroundColor,
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
           contentPadding: const EdgeInsets.all(0.0),
           insetPadding: const EdgeInsets.symmetric(horizontal: 100),
@@ -16,9 +17,9 @@ class LoadingDialog {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(color: Colors.blueAccent),
+                const CircularProgressIndicator(color: APPColorSecondary),
                 const SizedBox(height: 16),
-                Text("Aguarde....", style: TextStyle(color: Colors.black.withOpacity(0.6)),),
+                Text("Aguarde....", style: TextStyle(color: APPTextColorPrimary),),
               ],
             ),
           ),
@@ -33,9 +34,9 @@ class LoadingDialog {
       child: const Padding(
         padding: EdgeInsets.all(16.0),
         child: CircularProgressIndicator(
-          backgroundColor: Color(0xffD6D6D6),
+          backgroundColor: APPBackGroundColor,
           strokeWidth: 4,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+          valueColor: AlwaysStoppedAnimation<Color>(APPColorSecondary),
         ),
       ),
     );

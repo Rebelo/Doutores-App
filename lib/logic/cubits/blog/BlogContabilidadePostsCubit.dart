@@ -3,7 +3,7 @@ import 'package:doutores_app/logic/cubits/blog/BlogPostsState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BlogContabilidadePostsCubit extends Cubit<BlogPostsState> {
-  BlogContabilidadePostsCubit() : super(InitialState()) {
+  BlogContabilidadePostsCubit() : super(InitialStateBlog()) {
     getBlogPostsList();
   }
 

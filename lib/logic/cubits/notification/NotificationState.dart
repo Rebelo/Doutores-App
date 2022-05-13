@@ -4,7 +4,7 @@ import '../../../data/models/NotificationModel.dart';
 
 abstract class NotificationState extends Equatable {}
 
-class InitialState extends NotificationState {
+class InitialStateNotification extends NotificationState {
   @override
   List<Object> get props => [];
 }

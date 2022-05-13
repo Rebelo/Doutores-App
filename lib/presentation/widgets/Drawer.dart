@@ -17,6 +17,7 @@ class T2Drawer extends StatefulWidget {
 
 class T2DrawerState extends State<T2Drawer> {
   var selectedItem = -1;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class T2DrawerState extends State<T2Drawer> {
                         child: Row(
                           children: <Widget>[
                             const CircleAvatar(
+                              backgroundColor: APPColorSecondary,
                                 backgroundImage:
                                     AssetImage('assets/images/none.png'),
                                 radius: 40),
@@ -73,17 +75,17 @@ class T2DrawerState extends State<T2Drawer> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    getDrawerItem('assets/images/chat_bubble_outline_black.svg',
+                    getDrawerItem('assets/images/home-svgrepo-com.svg',
                         "Início", 1),
                     getDrawerItem('assets/images/chat_bubble_outline_black.svg',
                         "Solicitações", 2),
                     getDrawerItem('assets/images/feed_black.svg', "Blog", 3),
                     getDrawerItem(
-                        'assets/images/trending_up_black.svg', "Notificações", 4),
+                        'assets/images/notification-svgrepo-com.svg', "Notificações", 4),
                     getDrawerItem(
                         'assets/images/folder_black.svg', "Impostos", 5),
                     getDrawerItem(
-                        'assets/images/folder_black.svg', "Sair", 6),
+                        'assets/images/logout-svgrepo-com.svg', "Sair", 6),
                     const SizedBox(height: 30),
                     /*Divider(color: Colors.black, height: 1),
                     SizedBox(height: 30),
@@ -107,27 +109,34 @@ class T2DrawerState extends State<T2Drawer> {
 
           switch (selectedItem) {
             case 1:
+              Navigator.of(context).pop();
               Navigator.pushNamed(context, '/home');
               break;
             case 2:
+              Navigator.of(context).pop();
+              break;
             case 3:
-            Navigator.pushNamed(context, '/blog');
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/blog');
               break;
             case 4:
+              Navigator.of(context).pop();
               Navigator.pushNamed(context, '/notification');
               break;
             case 5:
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/files');
               break;
-              case 6:
-                finish(context);
-                Navigator.pushNamed(context, '/');
-                break;
+            case 6:
+              finish(context);
+              Navigator.pushNamed(context, '/');
+              break;
 
           }
         });
       },
       child: Container(
-        color: Colors.white,
+        color: APPBackGroundColor,
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
         child: Row(
           children: <Widget>[
@@ -137,7 +146,7 @@ class T2DrawerState extends State<T2Drawer> {
                 style: primaryTextStyle(
                     color:
                         selectedItem == selectedItem ? APPColorPrimary : Colors.black87,
-                    size: 18)),
+                    size: 20)),
 
           ],
         ),

@@ -21,7 +21,7 @@ class BlogComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return ListView.separated(
+    return ListView.builder(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: blogList.length,
@@ -53,9 +53,9 @@ class BlogComponent extends StatelessWidget {
           },
         );
       },
-      separatorBuilder: (context, index) {
+      /*separatorBuilder: (context, index) {
         return const Divider();
-      },
+      },*/
     );
   }
 }

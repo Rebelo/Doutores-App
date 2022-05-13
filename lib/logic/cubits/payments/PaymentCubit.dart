@@ -4,8 +4,8 @@ import 'package:doutores_app/logic/cubits/payments/PaymentState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
-  PaymentCubit() : super(InitialState()) {
-    getPaymentsList();
+  PaymentCubit() : super(InitialStatePayment()) {
+    //getPaymentsList();
   }
 
   void getPaymentsList() async {

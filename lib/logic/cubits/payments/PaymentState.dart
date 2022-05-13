@@ -6,7 +6,7 @@ import '../../../data/models/PaymentModel.dart';
 
 abstract class PaymentState extends Equatable {}
 
-class InitialState extends PaymentState {
+class InitialStatePayment extends PaymentState {
   @override
   List<Object> get props => [];
 }

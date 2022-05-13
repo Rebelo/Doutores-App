@@ -43,14 +43,14 @@ class PagamentosComponentState extends State<PagamentosComponent> {
 
     int len = 0;
 
-    if(widget.size == 0){
+    if(widget.size == 0 || widget.size > widget.paymList.length){
       len = widget.paymList.length;
     }else{
       len = widget.size;
     }
 
 
-    return widget.paymList.length == 0 ? const Center(child: Text('Sem Dados')) : ListView.separated(
+    return widget.paymList.length == 0 ? const Center(child: Text('Sem Dados')) : ListView.builder(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: len,
@@ -107,13 +107,13 @@ class PagamentosComponentState extends State<PagamentosComponent> {
           },
         );
       },
-      separatorBuilder: (context, index) {
+      /*separatorBuilder: (context, index) {
         //if(index != widget.postsList!.length -1 ) {
         return const Divider();
         //} else {
         //return Container();
         //}
-      },
+      },*/
     );
   }
 }

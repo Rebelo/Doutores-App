@@ -10,13 +10,14 @@ import '../../utils/Utils.dart';
 
 class FileRepository{
 
-  static List<File> files = [];
+  static List<File> otherFiles = [];
+  static List<File> impostos = [];
 
-  static Future<void> getFiles() async {
+  static Future<void> getImpostos() async {
 
-    files = [];
+    impostos = [];
 
-    String inssId = "", fgtsId = "", outrosImpostosId = "", certDigId = "", folhaId = "", notasFiscaisId = "", impostosId = "";
+    String inssId = "", fgtsId = "", outrosImpostosId = "", impostosId = "";
 
     // PRIMEIRAS PASTAS
 
@@ -35,19 +36,8 @@ class FileRepository{
 
     List<dynamic> firstDecodedResponseBody = json.decode(response.body);
     for (var element in firstDecodedResponseBody) {
-      switch(element['name']){
-        case "FOLHA | PRÓ-LABORE":
-          folhaId = element['id'];
-          break;
-        case "CERTIFICADO DIGITAL":
-          certDigId = element['id'];
-          break;
-        case "NOTAS FISCAIS":
-          notasFiscaisId = element['id'];
-          break;
-        case "IMPOSTOS":
+      if(element['name'] == "IMPOSTOS"){
           impostosId = element['id'];
-          break;
       }
     }
 
@@ -81,8 +71,6 @@ class FileRepository{
       }
     }
 
-
-
     //INSS
     response = await http.post(
         Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
@@ -101,6 +89,7 @@ class FileRepository{
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            impostos,
             element['downloadToken'],
             "DARF - Previdenciário",
             element['dueDate'].split("/")[0],
@@ -132,6 +121,7 @@ class FileRepository{
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            impostos,
             element['downloadToken'],
             "FGTS",
             element['dueDate'].split("/")[0],
@@ -163,6 +153,7 @@ class FileRepository{
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            impostos,
             element['downloadToken'],
             "Simples Nacional | Taxas",
             element['dueDate'].split("/")[0],
@@ -176,8 +167,45 @@ class FileRepository{
       }
     }
 
+  }
+
+  static Future<void> getOtherFiles() async {
+
+    otherFiles = [];
+
+    String certDigId = "", folhaId = "", notasFiscaisId = "";
+
+    // PRIMEIRAS PASTAS
+
+    dynamic response = await http.post(
+        Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
+        body: jsonEncode({
+          "companyToken": UserRepository.user.companyToken,
+          "parentId":null,
+          "startDate":null,
+          "endDate":null,
+          "fileName":"",
+          "contentType":""
+        }),
+        headers: Header.commonHeader()
+    );
+
+    List<dynamic> firstDecodedResponseBody = json.decode(response.body);
+    for (var element in firstDecodedResponseBody) {
+      switch(element['name']){
+        case "FOLHA | PRÓ-LABORE":
+          folhaId = element['id'];
+          break;
+        case "CERTIFICADO DIGITAL":
+          certDigId = element['id'];
+          break;
+        case "Notas Fiscais":
+          notasFiscaisId = element['id'];
+          break;
+      }
+    }
+
     //CERT DIG
-    /*
     response = await http.post(
         Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
         body: jsonEncode({
@@ -191,26 +219,26 @@ class FileRepository{
         headers: Header.commonHeader()
     );
 
-    decodedResponseBody = json.decode(response.body);
+    List<dynamic> decodedResponseBody = json.decode(response.body);
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            otherFiles,
             element['downloadToken'],
             "Certificado Digital",
             element['dueDate'].split("/")[0],
             Utils.numToMonth(element['dueDate'].split("/")[1]),
             element['referenceDate'].split(" ")[0].split("/")[2],
             element['referenceDate'].split(" ")[0].split("/")[1],
-            "Cert Digital",
+            "Cert. Digital",
             element['value'],
             element['dueDate']
         );
       }
     }
-    */
+
 
     //FOLHA
-    /*
     response = await http.post(
         Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
         body: jsonEncode({
@@ -228,6 +256,7 @@ class FileRepository{
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            otherFiles,
             element['downloadToken'],
             "Folha | Prolabore",
             element['dueDate'].split("/")[0],
@@ -240,10 +269,9 @@ class FileRepository{
         );
       }
     }
-    */
+
 
     //NOTASFISCAIS
-    /*
     response = await http.post(
         Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
         body: jsonEncode({
@@ -261,6 +289,7 @@ class FileRepository{
     for (var element in decodedResponseBody) {
       if(element['type'] != "dir") {
         addFile(
+            otherFiles,
             element['downloadToken'],
             "Notas Fiscais",
             element['dueDate'].split("/")[0],
@@ -273,14 +302,16 @@ class FileRepository{
         );
       }
     }
-    */
+
 
   }
 
-  static void addFile(String urlPath, String name, String dia, String mes, String referenceYear, String referenceMonth, String type, String value, String dueDate){
+  static void addFile(List<File> list, String urlPath, String name, String dia, String mes, String referenceYear, String referenceMonth, String type, String value, String dueDate){
     String dueDateFormated = dueDate.split(" ")[0].replaceAll("/","-");
+
+
     File f = File(urlPath, name, dia, mes, referenceYear, referenceMonth, type, value, dueDateFormated);
-    files.add(f);
+    list.add(f);
     /*files.sort((a, b){ //sorting in descending order
       return DateTime.parse(b.dueDate!).compareTo(DateTime.parse(a.dueDate!));
     });*/

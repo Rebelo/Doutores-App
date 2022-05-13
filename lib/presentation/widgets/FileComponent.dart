@@ -9,18 +9,18 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/AppWidget.dart';
 
-class DriveComponent extends StatefulWidget {
+class FileComponent extends StatefulWidget {
   static String tag = '/DriveComponent';
   final List<File> filesList;
   final int size;
 
-  const DriveComponent({Key? key, required this.filesList, this.size = 0}) : super(key: key);
+  const FileComponent({Key? key, required this.filesList, this.size = 0}) : super(key: key);
 
   @override
-  DriveComponentState createState() => DriveComponentState();
+  FileComponentState createState() => FileComponentState();
 }
 
-class DriveComponentState extends State<DriveComponent> {
+class FileComponentState extends State<FileComponent> {
   @override
   void initState() {
     super.initState();
@@ -49,13 +49,9 @@ class DriveComponentState extends State<DriveComponent> {
       len = widget.size;
     }
 
-    /*widget.filesList.sort((a, b){ //sorting in descending order
-      return DateTime.parse(b.dueDate!).compareTo(DateTime.parse(a.dueDate!));
-    });*/
-
     widget.filesList.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
 
-    return ListView.separated(
+    return ListView.builder(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: len,
@@ -66,7 +62,12 @@ class DriveComponentState extends State<DriveComponent> {
         return Column(
           children: <Widget>[
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 5),
+              decoration:BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+              ),
+              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
+              margin: const EdgeInsets.only(top: 2, bottom: 5),
               child: Row(
                 children: <Widget>[
                   Column(
@@ -88,7 +89,7 @@ class DriveComponentState extends State<DriveComponent> {
                     ],
                   ),
                   Container(
-                    decoration: boxDecoration(radius: 8, showShadow: true, bgColor: Colors.white),
+                    decoration: boxDecoration(radius: 8, showShadow: true, bgColor: const Color.fromRGBO(244, 244, 244, 1)),
                     margin: const EdgeInsets.only(left: 16, right: 16),
                     width: width / 6,
                     height: width / 6,
@@ -135,13 +136,13 @@ class DriveComponentState extends State<DriveComponent> {
           },
         );
       },
-      separatorBuilder: (context, index) {
+      /*separatorBuilder: (context, index) {
         //if(index != widget.postsList!.length -1 ) {
           return const Divider();
         //} else {
           //return Container();
         //}
-      },
+      },*/
     );
   }
 }

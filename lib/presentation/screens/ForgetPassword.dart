@@ -98,9 +98,9 @@ class BHForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           },
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: APPDividerColor)),
+                                borderSide: BorderSide(color: APPBackGroundColor2)),
                             focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: APPDividerColor)),
+                                borderSide: BorderSide(color: APPBackGroundColor2)),
                             labelText: "E-mail",
                             labelStyle:
                                 TextStyle(color: APPGreyColor, fontSize: 14),

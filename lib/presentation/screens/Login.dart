@@ -86,7 +86,7 @@ class LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(15),
                       topLeft: Radius.circular(15)),
-                  color: whiteColor,
+                  color: APPBackGroundColor,
                 ),
                 child: SingleChildScrollView(
                   child: Form(
@@ -111,7 +111,7 @@ class LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(color: blackColor),
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: APPDividerColor)),
+                                borderSide: BorderSide(color: APPBackGroundColor2)),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: APPColorPrimary)),
                             labelText: "E-mail",
@@ -149,7 +149,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   size: 20),
                             ),
                             enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: APPDividerColor)),
+                                borderSide: BorderSide(color: APPBackGroundColor2)),
                             focusedBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: APPColorPrimary)),
                           ),
@@ -188,7 +188,7 @@ class LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               BtnSend,
                               style: TextStyle(
-                                  color: whiteColor,
+                                  color: APPBackGroundColor,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),

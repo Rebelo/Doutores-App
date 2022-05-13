@@ -17,12 +17,12 @@ class NotificationRepository{
 
   static Future<void> getUnpresented() async {
 
-    notifications = [];
+    notifications = [ ];
 
     final response = await NotificationDataProvider.getUnpresented();
 
     List<dynamic> myMap = json.decode(response.body);
-    myMap.forEach((element) {
+    for (var element in myMap) {
       String x = element['message'].replaceAll("Drive", "sistema");
       String message = x.split(".")[0] + x.split(".")[1];
       String date = element['date'].split("T")[0];
@@ -31,14 +31,14 @@ class NotificationRepository{
 
       NotificationModel n = NotificationModel(dateTime, message);
       notifications.add(n);
-    });
+    }
 
   }
 
   static Future<void> markAsPresented() async {
 
     final response = await http.post(
-        Uri.https('api.osayk.com.br', 'api/notifications/GetUnpresented'),
+        Uri.https('api.osayk.com.br', 'api/notifications/MarkAsPresented'),
         headers: Header.commonHeader()
 
     );
@@ -46,6 +46,7 @@ class NotificationRepository{
     if (response.statusCode != 200){
       //todo
     }
+
 
   }
 

@@ -49,7 +49,6 @@ class BlogRepository{
     }
   }
 
-
   static List<BlogSamplePost> fillObjects(dynamic response, [int max = 0]){
     var articles = response.getElementsByTagName("article");
 
@@ -71,6 +70,10 @@ class BlogRepository{
       result = result.replaceAll("<br /> ","\n");
       result = result.replaceAll("<br> ","\n");
       result = result.replaceAll("<br > ","\n");
+      result = title.replaceAll("<br/>","\n");
+      result = result.replaceAll("<br />","\n");
+      result = result.replaceAll("<br>","\n");
+      result = result.replaceAll("<br >","\n");
 
       posts.add(
           BlogSamplePost(

@@ -6,8 +6,8 @@ import 'package:doutores_app/logic/cubits/notification/NotificationState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
-  NotificationCubit() : super(InitialState()) {
-    getNotificationsList();
+  NotificationCubit() : super(InitialStateNotification()) {
+    //getNotificationsList();
   }
 
   void getNotificationsList() async {

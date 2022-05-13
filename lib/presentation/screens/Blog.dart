@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/BlogSamplePostModel.dart';
 import '../../logic/cubits/blog/BlogPostsState.dart';
+import '../../utils/APPColors.dart';
 import '../Widgets/BlogComponent.dart';
 import '../Widgets/Drawer.dart';
 import '../widgets/LoadingDialog.dart';
@@ -14,8 +15,6 @@ class BlogScreen extends StatefulWidget {
   static var tag = "/Blog";
 
   const BlogScreen({Key? key}) : super(key: key);
-
-
 
   @override
   BlogScreenState createState() => BlogScreenState();
@@ -39,12 +38,16 @@ class BlogScreenState extends State<BlogScreen> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text('Blog', style: boldTextStyle(color: black)),
-            backgroundColor: white,
+            title: const Text('Blog', style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: APPBackGroundColor),),
+            backgroundColor: APPColorPrimary,
+            centerTitle: true,
             leading: Builder(
               builder: (BuildContext context) {
                 return IconButton(
-                    icon: const Icon(Icons.menu, color: black),
+                    icon: const Icon(Icons.menu, color: APPBackGroundColor),
                     onPressed: () {
                       _scaffoldKey.currentState!.openDrawer();
                     }
@@ -53,8 +56,8 @@ class BlogScreenState extends State<BlogScreen> {
             ),
             bottom: const TabBar(
               isScrollable: true,
-              labelColor: Colors.black,
-              indicatorColor: Colors.black12,
+              labelColor: APPBackGroundColor,
+              indicatorColor: APPColorSecondary,
               tabs: [
                 Tab(text: "Contabilidade"),
                 Tab(text: "Empreendedorismo"),
