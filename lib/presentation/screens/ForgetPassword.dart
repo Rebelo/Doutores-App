@@ -33,17 +33,20 @@ class BHForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         backgroundColor: APPColorPrimary,
         body: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
           listener: (context, state) {
-            if(state is LoadingState){
+            if(state is NoInternetState){
+              Alerts.noInternetError(context);
+            }
+            else if(state is LoadingState){
               LoadingDialog.showLoadingDialog(context);
             }
-            if (state is LoadedState){
+            else if (state is LoadedState){
               finish(context);
               const LoginScreen().launch(context);
             }
-            if (state is ErrorState){
+            else if (state is ErrorState){
               Alerts.showError(context, "Falha", "Não conseguimos pedir uma nova senha, tente novamente mais tarde", "ok", Icons.access_alarms);
             }
-            if (state is WrongEmailState){
+            else if (state is WrongEmailState){
               Alerts.showError(context, "Falha", "Email não cadastrado no sistema", "ok", Icons.access_alarms);
             }
           },

@@ -3,24 +3,24 @@ import 'package:doutores_app/data/repositories/PaymentRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/PaymentModel.dart';
 import '../../utils/AppWidget.dart';
 
-class PagamentosComponent extends StatefulWidget {
+class PaymentsComponent extends StatefulWidget {
   static String tag = '/PagamentosComponent';
   final List<Payment> paymList;
   final int size;
 
-  const PagamentosComponent({Key? key, required this.paymList, this.size = 0}) : super(key: key);
+  const PaymentsComponent({Key? key, required this.paymList, this.size = 0}) : super(key: key);
 
 
   @override
-  PagamentosComponentState createState() => PagamentosComponentState();
+  PaymentsComponentState createState() => PaymentsComponentState();
 }
 
-class PagamentosComponentState extends State<PagamentosComponent> {
+class PaymentsComponentState extends State<PaymentsComponent> {
   @override
   void initState() {
     super.initState();
@@ -35,7 +35,7 @@ class PagamentosComponentState extends State<PagamentosComponent> {
   }
 
   void _launchURL(url) async {
-    if (!await launch(url)) throw 'Could not launch url';
+    //if (!await launch(url)) throw 'Could not launch url';
   }
 
   @override
@@ -50,7 +50,7 @@ class PagamentosComponentState extends State<PagamentosComponent> {
     }
 
 
-    return widget.paymList.length == 0 ? const Center(child: Text('Sem Dados')) : ListView.builder(
+    return widget.paymList.isEmpty ? const Center(child: Text('Sem Dados')) : ListView.builder(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: len,
@@ -89,7 +89,7 @@ class PagamentosComponentState extends State<PagamentosComponent> {
 
                             Flexible(child: Text(mData.description ?? "0", maxLines: 2)),
                             const SizedBox(height: 0, width: 25),
-                            text("R\$"+mData.value.toString() ?? "0", fontSize: 14.0)
+                            text("R\$"+mData.value.toString(), fontSize: 14.0)
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),

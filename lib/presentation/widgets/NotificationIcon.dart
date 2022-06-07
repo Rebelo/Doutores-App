@@ -57,14 +57,14 @@ class NotificationIconState extends State<NotificationIcon> {
                     bloc: _notificationCubit,
                     builder: (context, state) {
 
-                      List<NotificationModel> counter = [];
+                      int counter = 0;
 
                       if (state is LoadedState) {
-                        counter = state.notifications;
+                        counter = state.total;
                       }
 
                       return Text(
-                        counter.length.toString(),
+                        counter.toString(),
                         style: const TextStyle(fontSize: 10),
                       );
                     },

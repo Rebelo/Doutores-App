@@ -12,9 +12,6 @@ class File {
   String? value = "";
   String? dueDate = "";
 
-
-
-
   File(this.urlPath, this.name, this.dia, this.mes, this.referenceYear,
       this.referenceMonth, this.type, this.value, this.dueDate);
 }

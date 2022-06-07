@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
-import '../../data/models/BlogSamplePostModel.dart';
+import '../../data/models/BlogModel.dart';
 import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../../utils/AppWidget.dart';
 

@@ -1,5 +1,7 @@
 
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 class Utils {
 
   static String numToMonth(String num){
@@ -43,6 +45,34 @@ class Utils {
         break;
     }
     return ret;
+  }
+
+  static String getDefaultDate(String strDate, {int sum = 0}){
+
+    String date = strDate.split("T")[0];
+    String time = strDate.split("T")[1];
+
+    String day = date.split("-")[2];
+    String month = date.split("-")[1];
+    String year = date.split("-")[0].substring(2);
+
+    int int_hour = int.parse(time.split(":")[0]);
+    String hour = (int_hour+sum).toString();
+    String minute = time.split(":")[1];
+
+    return hour+":"+minute+" - "+day+"/"+month+"/"+year;
+
+  }
+
+  static Future<bool> isConnected() async{
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+       return true;
+    } else {
+      return false;
+    }
+
   }
 
 }

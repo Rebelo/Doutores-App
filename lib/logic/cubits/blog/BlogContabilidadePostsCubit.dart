@@ -3,19 +3,16 @@ import 'package:doutores_app/logic/cubits/blog/BlogPostsState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BlogContabilidadePostsCubit extends Cubit<BlogPostsState> {
-  BlogContabilidadePostsCubit() : super(InitialStateBlog()) {
-    getBlogPostsList();
-  }
+  BlogContabilidadePostsCubit() : super(InitialStateBlog(BlogRepository.contabilidadePosts));
 
   void getBlogPostsList() async {
     try {
-      emit(LoadingStateBlog());
-      await BlogRepository.getContabilidadePosts();
-      emit(LoadedStateBlog(BlogRepository.contabilidadePosts));
+      emit(LoadingStateBlog(BlogRepository.contabilidadePosts));
+      await BlogRepository.getContabilidadePosts() ? emit(LoadedStateBlog(BlogRepository.contabilidadePosts)) : emit(ErrorStateBlog(BlogRepository.contabilidadePosts));
+
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorStateBlog(BlogRepository.contabilidadePosts));
     }
   }
-
 
 }

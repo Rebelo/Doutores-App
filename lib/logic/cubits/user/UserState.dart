@@ -34,3 +34,8 @@ class WrongCredentialsState extends UserState {
   @override
   List<Object> get props => [];
 }
+
+class NoInternetState extends UserState {
+  @override
+  List<Object> get props => [];
+}

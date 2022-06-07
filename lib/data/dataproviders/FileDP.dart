@@ -7,16 +7,15 @@ import '../../utils/Header.dart';
 
 
 class FileDataProvider{
-  //INSS
 
-  Future<http.Response> getInssFiles() async {
+  static Future<http.Response> getFiles(String? id, String? startDate, String? endDate) async {
     return await http.post(
         Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyDocumentsDrive'),
         body: jsonEncode({
-          "companyToken": UserRepository.user.token,
-          "parentId": 296081,
-          "startDate": null,
-          "endDate": null,
+          "companyToken": UserRepository.user.companyToken,
+          "parentId": id,
+          "startDate": startDate,
+          "endDate": endDate,
           "fileName": "",
           "contentType": ""
         }),
@@ -24,3 +23,4 @@ class FileDataProvider{
     );
   }
 }
+

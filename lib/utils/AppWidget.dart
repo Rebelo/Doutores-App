@@ -25,9 +25,9 @@ Widget text(
     maxLines: isLongText ? null : maxLine,
     overflow: TextOverflow.ellipsis,
     style: TextStyle(
-      fontFamily: fontFamily ?? null,
+      fontFamily: fontFamily,
       fontSize: fontSize,
-      color: textColor ?? APPColorSecondary,
+      color: APPColorSecondary,
       height: 1.5,
       letterSpacing: latterSpacing,
       decoration:
@@ -42,8 +42,8 @@ BoxDecoration boxDecoration(
     Color bgColor = Colors.greenAccent,
     var showShadow = false}) {
   return BoxDecoration(
-    color: bgColor ?? APPColorSecondary,
-    boxShadow: [BoxShadow(color: Colors.transparent)],
+    color: APPColorSecondary,
+    boxShadow: const [BoxShadow(color: Colors.transparent)],
     border: Border.all(color: color),
     borderRadius: BorderRadius.all(Radius.circular(radius)),
   );

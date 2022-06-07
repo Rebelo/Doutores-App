@@ -1,64 +1,69 @@
 
-import 'package:doutores_app/data/models/BlogSamplePostModel.dart';
-import 'package:doutores_app/data/dataproviders//BlogSamplePostDP.dart';
-
+import 'package:doutores_app/data/models/BlogModel.dart';
+import 'package:doutores_app/data/dataproviders//BlogDP.dart';
+import 'package:doutores_app/utils/APPConstants.dart';
+import 'package:html/parser.dart';
 
 class BlogRepository{
 
-  static List<BlogSamplePost> last3Posts = [];
-  static List<BlogSamplePost> contabilidadePosts = [];
-  static List<BlogSamplePost> empreendedorismoPosts = [];
-  static List<BlogSamplePost> tecnologiaPosts = [];
+  static List<Blog> last3Posts = [];
+  static List<Blog> contabilidadePosts = [];
+  static List<Blog> empreendedorismoPosts = [];
+  static List<Blog> tecnologiaPosts = [];
 
-  static Future<void> getLast3Posts() async {
+  static Future<bool> getLast3Posts() async {
 
-    final response = await BlogSamplePostDataProvider.getLastPosts("blog.html");
-    if (response is String) {
+    final response = await BlogSamplePostDataProvider.getLastPosts(defaultBlogPath);
 
+    if (response.statusCode != 200) {
+      return false;
     }else{
-      last3Posts = fillObjects(response, 3);
+      last3Posts = fillBlogList(parse(response.body), 3);
+      return true;
     }
+
   }
 
-
-  static Future<void> getContabilidadePosts() async {
-    final response = await BlogSamplePostDataProvider.getLastPosts("contabilidade.html");
-    if (response is String) {
-
+  static Future<bool> getContabilidadePosts() async {
+    final response = await BlogSamplePostDataProvider.getLastPosts(contabilidadeBlogPath);
+    if (response.statusCode != 200) {
+       return false;
     }else{
-      contabilidadePosts = fillObjects(response);
+      contabilidadePosts = fillBlogList(parse(response.body));
+       return true;
     }
-
   }
 
-  static Future<void> getEmpreendedorismoPosts() async {
-    final response = await BlogSamplePostDataProvider.getLastPosts("empreendedorismo.html");
-    if (response is String) {
-
+  static Future<bool> getEmpreendedorismoPosts() async {
+    final response = await BlogSamplePostDataProvider.getLastPosts(empreendedorismoBlogPath);
+    if (response.statusCode != 200) {
+      return false;
     }else {
-      empreendedorismoPosts = fillObjects(response);
+      empreendedorismoPosts = fillBlogList(parse(response.body));
+       return true;
     }
   }
 
-  static Future<void> getTecnologiaPosts() async {
-    final response = await BlogSamplePostDataProvider.getLastPosts("tecnologia-e-o-futuro-dos-negocios.html");
-    if (response is String) {
-
+  static Future<bool> getTecnologiaPosts() async {
+    final response = await BlogSamplePostDataProvider.getLastPosts(tecnologiaBlogPath);
+    if (response.statusCode != 200) {
+      return false;
     }else {
-      tecnologiaPosts = fillObjects(response);
+      tecnologiaPosts = fillBlogList(parse(response.body));
+       return true;
     }
   }
 
-  static List<BlogSamplePost> fillObjects(dynamic response, [int max = 0]){
+  static List<Blog> fillBlogList(dynamic response, [int max = 0]){
     var articles = response.getElementsByTagName("article");
 
-    List<BlogSamplePost> posts = [];
+    List<Blog> blogList = [];
 
     if(max == 0) {
       max = articles.length;
     }
 
-    for (var i = 0; (i < max) && (i < 3); i++) {
+    for (var i = 0; i < max; i++) {
       var element = articles[i];
       var title = element.getElementsByTagName("a")[0].attributes['title'];
       var date = element.getElementsByTagName("a")[0].getElementsByTagName("figure")[0].getElementsByTagName("span")[0].text;
@@ -75,8 +80,8 @@ class BlogRepository{
       result = result.replaceAll("<br>","\n");
       result = result.replaceAll("<br >","\n");
 
-      posts.add(
-          BlogSamplePost(
+      blogList.add(
+          Blog(
               categoryName: "",
               title: result,
               date: date,
@@ -87,7 +92,7 @@ class BlogRepository{
       );
     }
 
-    return posts;
+    return blogList;
   }
 
 }

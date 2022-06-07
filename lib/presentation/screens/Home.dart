@@ -5,6 +5,8 @@ import 'package:doutores_app/logic/cubits/payments/PaymentState.dart';
 import 'package:doutores_app/logic/cubits/payments/PaymentCubit.dart';
 import 'package:doutores_app/logic/cubits/files/FilesState.dart';
 import 'package:doutores_app/logic/cubits/files/ImpostosCubit.dart';
+import 'package:doutores_app/logic/cubits/tickets/TicketsCubit.dart';
+import 'package:doutores_app/logic/cubits/tickets/TicketsState.dart';
 import '../../logic/cubits/notification/NotificationCubit.dart';
 import '../../logic/cubits/notification/NotificationState.dart';
 
@@ -12,14 +14,16 @@ import 'package:doutores_app/data/models/PaymentModel.dart';
 import 'package:doutores_app/data/models/FileModel.dart';
 import 'package:doutores_app/presentation/widgets/BlogComponent.dart';
 import 'package:doutores_app/presentation/widgets/FileComponent.dart';
-import 'package:doutores_app/presentation/widgets/PagamentosComponent.dart';
+import 'package:doutores_app/presentation/widgets/PaymentsComponent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-import '../../data/models/BlogSamplePostModel.dart';
+import '../../data/models/BlogModel.dart';
 import '../../utils/APPColors.dart';
+import '../Widgets/Alerts.dart';
 import '../widgets/LoadingDialog.dart';
+import '../widgets/MessagesIcon.dart';
 import '../widgets/NotificationIcon.dart';
 
 import 'package:doutores_app/presentation/widgets/Drawer.dart';
@@ -45,11 +49,13 @@ class HomeScreenState extends State<HomeScreen> {
     final _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
     final _paymentCubit = BlocProvider.of<PaymentCubit>(context);
     final _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
+    final _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
 
     if(_notificationCubit.state is InitialStateNotification)_notificationCubit.getNotificationsList();
     if(_impostosCubit.state is InitialStateFiles)_impostosCubit.getImpostosList();
     if(_paymentCubit.state is InitialStatePayment)_paymentCubit.getPaymentsList();
     if(_blogPostsCubit.state is InitialStateBlog)_blogPostsCubit.getBlogPostsList();
+    if(_ticketsCubit.state is InitialState)_ticketsCubit.getTicketsList();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -71,7 +77,10 @@ class HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        actions: const [ NotificationIcon() ],
+        actions: const [
+          MessagesIcon(),
+          NotificationIcon(),
+        ],
       ),
       body: SafeArea(
 
@@ -101,11 +110,11 @@ class HomeScreenState extends State<HomeScreen> {
                             Text('Mensalidades', style: boldTextStyle(size: 24)),
                             Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
                                   () {
-                                Navigator.pushNamed(context, '/blog');
+                                Navigator.pushNamed(context, '/payment');
                               },
                             ),
                           ],
-                        ).paddingOnly(left: 16, right: 16, top: 25, bottom: 20),
+                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 20),
 
                         BlocBuilder<PaymentCubit, PaymentState>(
                           bloc: _paymentCubit,
@@ -113,16 +122,33 @@ class HomeScreenState extends State<HomeScreen> {
 
                             List<Payment> paymentsList = [];
 
-                            if (state is LoadingStatePayment){
+                            if(state is NoInternetStatePayment){
+                              Alerts.noInternetError(context);
+                              return const Center(child: Text('Sem Dados'));
+                            }
+                            else if (state is LoadingStatePayment){
                               return LoadingDialog.showLittleLoading();
                             }
 
-                            if (state is LoadedStatePayment){
+                            else if (state is LoadedStatePayment){
                               paymentsList = state.payments;
-                              return PagamentosComponent(paymList: paymentsList, size: 3);
+
+                              return paymentsList.isNotEmpty ? const Center(child: Text('Sem Dados')) : PaymentsComponent(paymList: paymentsList, size: 3);
+
+                            }
+                            else if(state is ErrorStatePayment){
+                              return const Center(
+                                  child: Text(
+                                      'Não foi possível carregar esses dados',
+                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+
+                              );
                             }
 
-                            return const Center(child: Text('Sem Dados'));
+                            else {
+                              return const Center(child: Text('Sem Dados'));
+                            }
+
                           },
                         ),10.height,
                         /*const Divider(
@@ -154,12 +180,22 @@ class HomeScreenState extends State<HomeScreen> {
                               return LoadingDialog.showLittleLoading();
                             }
 
-                            if (state is LoadedStateFiles){
+                            else if (state is LoadedStateFiles){
                               filesList = state.files;
-                              return FileComponent(filesList: filesList, size: 3);
+                              return filesList.isNotEmpty ? FileComponent(filesList: filesList, size: 3) : const Center(child: Text('Sem Dados'));
                             }
+                            else if(state is ErrorStateFiles){
+                              return const Center(
+                                  child: Text(
+                                    'Não foi possível carregar esses dados',
+                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
 
-                            return const Center(child: Text('Sem Dados'));
+                              );
+                            }
+                            else {
+                              return const Center(child: Text('Sem Dados'));
+
+                            }
                           },
                         ),2.height,
                       /*const Divider(
@@ -180,23 +216,38 @@ class HomeScreenState extends State<HomeScreen> {
                               },
                             ),
                           ],
-                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 16),
+                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 0),
                         BlocBuilder<BlogPostsCubit, BlogPostsState>(
                           bloc: _blogPostsCubit,
                           builder: (context, state) {
 
-                            List<BlogSamplePost> blogsList = [];
+                            List<Blog> blogsList = [];
 
                             if(state is LoadingStateBlog){
                               return LoadingDialog.showLittleLoading();
                             }
 
-                            if (state is LoadedStateBlog){
+                            else if (state is LoadedStateBlog){
                               blogsList = state.blogSamples;
-                              return BlogComponent(blogList: blogsList);
+                              return blogsList.isNotEmpty ? BlogComponent(blogList: blogsList) : const Center(child: Text('Sem Dados'));
                             }
 
-                            return const Center(child: Text('Sem Dados'));
+                            else if (state is InitialStateBlog){
+                              return const Center(child: Text('Sem Dados'));
+                            }
+
+                            else if (state is ErrorStateBlog){
+                              return const Center(
+                                  child: Text(
+                                    'Não foi possível carregar esses dados',
+                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+
+                              );
+                            }
+
+                            else {
+                              return const Center(child: Text('Sem Dados'));
+                            }
 
                           },
                         ),

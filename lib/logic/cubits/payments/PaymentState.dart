@@ -24,7 +24,12 @@ class LoadedStatePayment extends PaymentState {
   List<Object> get props => [payments];
 }
 
-class ErrorState extends PaymentState {
+class ErrorStatePayment extends PaymentState {
+  @override
+  List<Object> get props => [];
+}
+
+class NoInternetStatePayment extends PaymentState {
   @override
   List<Object> get props => [];
 }

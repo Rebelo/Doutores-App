@@ -3,20 +3,26 @@ import 'package:doutores_app/data/repositories/PaymentRepository.dart';
 import 'package:doutores_app/logic/cubits/payments/PaymentState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../utils/Utils.dart';
+
 class PaymentCubit extends Cubit<PaymentState> {
   PaymentCubit() : super(InitialStatePayment()) {
     //getPaymentsList();
   }
 
-  void getPaymentsList() async {
+  Future getPaymentsList() async {
     try {
-      emit(LoadingStatePayment());
-      await PaymentRepository.get_payments();
-      emit(LoadedStatePayment(PaymentRepository.pagamentosList));
+      if(await Utils.isConnected() == false) {
+        emit(NoInternetStatePayment());
+
+      } else {
+        emit(LoadingStatePayment());
+        await PaymentRepository.getPayments() ? emit(LoadedStatePayment(PaymentRepository.pagamentosList)) : emit(ErrorStatePayment());
+      }
+
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorStatePayment());
     }
   }
-
 
 }

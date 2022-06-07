@@ -6,7 +6,7 @@ const APPColorSecondary = Color(0xFF52b202);
 const APPTextColorPrimary = Color(0xFF212121);
 const APPTextColorSecondary = Color(0xFF5A5C5E);
 
-const APPBackGroundColor = Color(0xFFF9F9FF);
+const APPBackGroundColor = Color(0xFFF9F9FA);
 const APPBackGroundColor2 = Color(0xFFDADADA);
 
 const APPGreyColor = Color(0xFF808080);

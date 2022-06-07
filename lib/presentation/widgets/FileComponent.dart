@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:doutores_app/data/models/FileModel.dart';
-import 'package:doutores_app/data/repositories/FileRepository.dart';
+import 'package:doutores_app/utils/APPColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/AppWidget.dart';
 
@@ -35,7 +35,7 @@ class FileComponentState extends State<FileComponent> {
   }
 
   void _launchURL(url) async {
-    if (!await launch(url)) throw 'Could not launch url';
+    //if (!await launch(url)) throw 'Could not launch url';
   }
 
   @override
@@ -55,7 +55,7 @@ class FileComponentState extends State<FileComponent> {
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: len,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       itemBuilder: (context, index) {
         File mData = widget.filesList[index];
         var width = MediaQuery.of(context).size.width;
@@ -89,12 +89,14 @@ class FileComponentState extends State<FileComponent> {
                     ],
                   ),
                   Container(
-                    decoration: boxDecoration(radius: 8, showShadow: true, bgColor: const Color.fromRGBO(244, 244, 244, 1)),
+                    decoration: const BoxDecoration(
+                      color: APPBackGroundColor, borderRadius: BorderRadius.all(Radius.circular(8))
+                    ),
                     margin: const EdgeInsets.only(left: 16, right: 16),
                     width: width / 6,
                     height: width / 6,
                     padding: EdgeInsets.all(width / 80),
-                    child:  SvgPicture.asset("assets/images/cash.svg", height: width / 10, width: width / 10),
+                    child:  SvgPicture.asset("assets/images/cash.svg", height: width / 10, width: width / 10, fit: BoxFit.cover,),
 
                   ),
                   Expanded(
@@ -122,7 +124,7 @@ class FileComponentState extends State<FileComponent> {
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
-                        text("Ref.: " + mData.referenceMonth! + "/" + mData.referenceYear!, fontSize: 12.0)
+                        Text("Ref.: " + mData.referenceMonth! + "/" + mData.referenceYear!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: APPColorSecondary))
                       ],
                     ),
                   )

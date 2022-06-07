@@ -14,15 +14,21 @@ class LoadingState extends NotificationState {
 }
 
 class LoadedState extends NotificationState {
-  LoadedState(this.notifications);
+  LoadedState(this.notifications,  this.total);
 
   final List<NotificationModel> notifications;
+  final int total;
 
   @override
-  List<Object> get props => [notifications];
+  List<Object> get props => [notifications,  total];
 }
 
 class ErrorState extends NotificationState {
+  @override
+  List<Object> get props => [];
+}
+
+class NoInternetState extends NotificationState {
   @override
   List<Object> get props => [];
 }

@@ -5,6 +5,10 @@ import '../../utils/APPColors.dart';
 
 class Alerts {
 
+  static void noInternetError(context){
+    showError(context, "Sem Conexão", "Verifique sua conexão à internet", "ok", Icons.signal_wifi_connected_no_internet_4);
+  }
+
   static void showError(BuildContext context, String title, String description, String buttonTitle, IconData icon) {
     showDialog(
       context: context,

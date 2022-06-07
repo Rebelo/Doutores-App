@@ -1,12 +1,12 @@
 import 'package:doutores_app/logic/cubits/blog/BlogContabilidadePostsCubit.dart';
 import 'package:doutores_app/logic/cubits/blog/BlogEmpreendedorismoPostsCubit.dart';
 import 'package:doutores_app/logic/cubits/blog/BlogTecnologiaPostsCubit.dart';
+import '../../logic/cubits/blog/BlogPostsState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nb_utils/nb_utils.dart';
-import '../../data/models/BlogSamplePostModel.dart';
-import '../../logic/cubits/blog/BlogPostsState.dart';
+import '../../data/models/BlogModel.dart';
 import '../../utils/APPColors.dart';
+import '../Widgets/Alerts.dart';
 import '../Widgets/BlogComponent.dart';
 import '../Widgets/Drawer.dart';
 import '../widgets/LoadingDialog.dart';
@@ -20,17 +20,23 @@ class BlogScreen extends StatefulWidget {
   BlogScreenState createState() => BlogScreenState();
 }
 
-int currentIndex = 0;
-
 class BlogScreenState extends State<BlogScreen> {
 
   final BlogTecnologiaPostsCubit _blogTecnologiaPostsCubit = BlogTecnologiaPostsCubit();
   final BlogEmpreendedorismoPostsCubit _blogEmpreendedorismoPostsCubit = BlogEmpreendedorismoPostsCubit();
   final BlogContabilidadePostsCubit _blogContabilidadePostsCubit = BlogContabilidadePostsCubit();
 
+
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    if(_blogTecnologiaPostsCubit.state is InitialStateBlog)_blogTecnologiaPostsCubit.getBlogPostsList();
+    if(_blogEmpreendedorismoPostsCubit.state is InitialStateBlog)_blogEmpreendedorismoPostsCubit.getBlogPostsList();
+    if(_blogContabilidadePostsCubit.state is InitialStateBlog)_blogContabilidadePostsCubit.getBlogPostsList();
+
+
     return
       DefaultTabController(
         length: 3,
@@ -72,7 +78,16 @@ class BlogScreenState extends State<BlogScreen> {
                 bloc: _blogContabilidadePostsCubit,
                 builder: (context, state) {
 
-                  List<BlogSamplePost> posts = [];
+                  List<Blog> posts = [];
+
+                  if(state is NoInternetStateBlog){
+                    Alerts.noInternetError(context);
+                    return const Center(child: Text('Sem Dados'));
+                  }
+                  else if(state is LoadingStateBlog){
+                    //LoadingDialog.showLoadingDialog(context);
+                    return LoadingDialog.showLittleLoading();
+                  }
 
                   if (state is LoadedStateBlog) {
                     posts = state.blogSamples;
@@ -86,7 +101,12 @@ class BlogScreenState extends State<BlogScreen> {
               BlocBuilder<BlogEmpreendedorismoPostsCubit, BlogPostsState>(
                 bloc: _blogEmpreendedorismoPostsCubit,
                 builder: (context, state) {
-                  List<BlogSamplePost> posts = [];
+                  List<Blog> posts = [];
+
+                  if(state is LoadingStateBlog){
+                    //LoadingDialog.showLoadingDialog(context);
+                    return LoadingDialog.showLittleLoading();
+                  }
 
                   if (state is LoadedStateBlog) {
                     posts = state.blogSamples;
@@ -100,10 +120,11 @@ class BlogScreenState extends State<BlogScreen> {
               BlocBuilder<BlogTecnologiaPostsCubit, BlogPostsState>(
                 bloc: _blogTecnologiaPostsCubit,
                 builder: (context, state) {
-                  List<BlogSamplePost> posts = [];
+                  List<Blog> posts = [];
 
                   if(state is LoadingStateBlog){
-                    LoadingDialog.showLoadingDialog(context);
+                    //LoadingDialog.showLoadingDialog(context);
+                    return LoadingDialog.showLittleLoading();
                   }
 
                   if (state is LoadedStateBlog) {

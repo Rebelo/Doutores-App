@@ -1,28 +1,46 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data/models/BlogSamplePostModel.dart';
+import '../../../data/models/BlogModel.dart';
 
 abstract class BlogPostsState extends Equatable {}
 
 class InitialStateBlog extends BlogPostsState {
-  @override
-  List<Object>  get props => [];
-}
-class LoadingStateBlog extends BlogPostsState {
-  @override
-  List<Object> get props => [];
-}
+  InitialStateBlog(this.blogSamples);
 
-class LoadedStateBlog extends BlogPostsState {
-  LoadedStateBlog(this.blogSamples);
-
-  final List<BlogSamplePost> blogSamples;
+  final List<Blog> blogSamples;
 
   @override
   List<Object> get props => [blogSamples];
 }
 
-class ErrorState extends BlogPostsState {
+class LoadingStateBlog extends BlogPostsState {
+  LoadingStateBlog(this.blogSamples);
+
+  final List<Blog> blogSamples;
+
+  @override
+  List<Object> get props => [blogSamples];
+}
+
+class LoadedStateBlog extends BlogPostsState {
+  LoadedStateBlog(this.blogSamples);
+
+  final List<Blog> blogSamples;
+
+  @override
+  List<Object> get props => [blogSamples];
+}
+
+class ErrorStateBlog extends BlogPostsState {
+  ErrorStateBlog(this.blogSamples);
+
+  final List<Blog> blogSamples;
+
+  @override
+  List<Object> get props => [blogSamples];
+}
+
+class NoInternetStateBlog extends BlogPostsState {
   @override
   List<Object> get props => [];
 }

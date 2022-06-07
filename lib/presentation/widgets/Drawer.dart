@@ -50,7 +50,7 @@ class T2DrawerState extends State<T2Drawer> {
                             const CircleAvatar(
                               backgroundColor: APPColorSecondary,
                                 backgroundImage:
-                                    AssetImage('assets/images/none.png'),
+                                    AssetImage('assets/images/app/placeholder.jpg'),
                                 radius: 40),
                             const SizedBox(width: 16),
                             Expanded(
@@ -83,7 +83,7 @@ class T2DrawerState extends State<T2Drawer> {
                     getDrawerItem(
                         'assets/images/notification-svgrepo-com.svg', "Notificações", 4),
                     getDrawerItem(
-                        'assets/images/folder_black.svg', "Impostos", 5),
+                        'assets/images/folder_black.svg', "Arquivos", 5),
                     getDrawerItem(
                         'assets/images/logout-svgrepo-com.svg', "Sair", 6),
                     const SizedBox(height: 30),
@@ -114,6 +114,7 @@ class T2DrawerState extends State<T2Drawer> {
               break;
             case 2:
               Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/tickets');
               break;
             case 3:
               Navigator.of(context).pop();
@@ -128,8 +129,8 @@ class T2DrawerState extends State<T2Drawer> {
               Navigator.pushNamed(context, '/files');
               break;
             case 6:
-              finish(context);
-              Navigator.pushNamed(context, '/');
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
               break;
 
           }

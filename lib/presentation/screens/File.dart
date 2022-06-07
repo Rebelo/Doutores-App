@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../utils/APPColors.dart';
+import '../Widgets/Alerts.dart';
+import '../Widgets/Drawer.dart';
 import '../widgets/FileComponent.dart';
 import '../widgets/LoadingDialog.dart';
 import 'package:doutores_app/data/models/FileModel.dart';
@@ -18,8 +20,6 @@ class FileScreen extends StatefulWidget {
   @override
   FileScreenState createState() => FileScreenState();
 }
-
-int currentIndex = 0;
 
 class FileScreenState extends State<FileScreen> {
 
@@ -47,19 +47,28 @@ class FileScreenState extends State<FileScreen> {
 
         List<File> filesList = [];
 
-        if (state is LoadingStateFiles){
+        if(state is NoInternetStateFiles){
+          Alerts.noInternetError(context);
+          return const Center(child: Text('Sem Dados'));
+        }
+        else if (state is LoadingStateFiles){
           return LoadingDialog.showLittleLoading();
         }
 
         if (state is LoadedStateFiles){
           filesList = state.files;
 
-          return RefreshIndicator(
-            onRefresh: () => _pullRefresh(),
-            child: FileComponent(
-                filesList: filesList.where((i) => i.type == type).toList()
-            ),
-          );
+
+          if(filesList.isEmpty){
+            return const Center(child: Text('Sem Dados'));
+          }else {
+            return RefreshIndicator(
+              onRefresh: () => _pullRefresh(),
+              child: FileComponent(
+                  filesList: filesList.where((i) => i.type == type).toList()
+              ),
+            );
+          }
         }
 
         return const Center(child: Text('Sem Dados'));
@@ -96,18 +105,11 @@ class FileScreenState extends State<FileScreen> {
 
   int selectedTab = 0;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  //Widget getTabContainer() {
-  void getTabContainer() {
-
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
     if(_impostosCubit.state is InitialStateFiles)_impostosCubit.getImpostosList();
@@ -116,54 +118,62 @@ class FileScreenState extends State<FileScreen> {
     if(_otherFilesCubit.state is InitialStateFiles)_otherFilesCubit.getOtherFilesList();
 
 
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: APPBackGroundColor,
+        appBar: AppBar(
+          title: const Text('Arquivos', style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: APPBackGroundColor),),
+          backgroundColor: APPColorPrimary,
+          centerTitle: true,
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                  icon: const Icon(Icons.menu, color: APPBackGroundColor),
+                  onPressed: () {
+                    _scaffoldKey.currentState!.openDrawer();
+                  }
+              );
+            },
+          ),
 
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
-
-    return Scaffold(
-      backgroundColor: APPBackGroundColor,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: context.iconColor),
-        centerTitle: true,
-        title: const Text('Arquivos',  style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87),
         ),
-        elevation: 0,
-        backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
 
-            HorizontalList(
-              spacing: 2,
-              padding: const EdgeInsets.all(16),
-              itemCount: tabList.length,
-              itemBuilder: (context, index) {
-                return AppButton(
-                  shapeBorder: RoundedRectangleBorder(borderRadius: radius(8)),
-                  text: tabList[index],
-                  textStyle: boldTextStyle(
-                      color: selectedTab == index ? Colors.white : Colors
-                          .black87, size: 14),
-                  onTap: () {
-                    selectedTab = index;
-                    setState(() {});
-                  },
-                  elevation: 0,
-                  color: selectedTab == index ? APPColorPrimary : const Color.fromRGBO(248, 248, 248, 1),
-                );
-              },
-            ),
-            getImpostosBlocBuilder(tabList[selectedTab]),
-          ],
+              HorizontalList(
+                spacing: 2,
+                padding: const EdgeInsets.all(16),
+                itemCount: tabList.length,
+                itemBuilder: (context, index) {
+                  return AppButton(
+                    shapeBorder: RoundedRectangleBorder(borderRadius: radius(8)),
+                    text: tabList[index],
+                    textStyle: boldTextStyle(
+                        color: selectedTab == index ? Colors.white : Colors
+                            .black87, size: 14),
+                    onTap: () {
+                      selectedTab = index;
+                      setState(() {});
+                    },
+                    elevation: 0,
+                    color: selectedTab == index ? APPColorSecondary : const Color.fromRGBO(248, 248, 248, 1),
+                  );
+                },
+              ),
+              (tabList[selectedTab] == "DARF" || tabList[selectedTab] == "FGTS" || tabList[selectedTab] == "Simples")
+              ? getImpostosBlocBuilder(tabList[selectedTab])
+              : getOtherFilesBlocBuilder(tabList[selectedTab])
+            ],
+          ),
         ),
+        drawer: const T2Drawer(),
       ),
     );
   }
 }
-

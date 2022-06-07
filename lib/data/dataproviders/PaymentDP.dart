@@ -11,7 +11,7 @@ import '../repositories/UserRepository.dart';
 
 class PaymentDataProvider{
 
-  Future<http.Response> getPagamentos() async {
+  static Future<http.Response> getPayments() async {
     return await http.post(
       Uri.https('api.osayk.com.br', 'api/Companies/GetPaymentInfoProfile'),
       headers: Header.commonHeader(),
@@ -24,3 +24,12 @@ class PaymentDataProvider{
   }
 
 }
+
+/*final response = await http.post(
+      Uri.https('api.osayk.com.br', 'api/Companies/GetPaymentInfoProfile'),
+      headers: Header.commonHeader(),
+      body: jsonEncode(<String, String>{
+        'companyToken': UserRepository.user.companyToken,
+        'subdomain': UserRepository.user.subdomain
+      }),
+    );*/

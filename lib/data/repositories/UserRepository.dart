@@ -1,13 +1,9 @@
 
-
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 
-import '../../utils/Header.dart';
 import '../dataproviders/UserDP.dart';
 import '../models/UserModel.dart';
-import 'NotificationRepository.dart';
 
 class UserRepository{
 
@@ -45,10 +41,7 @@ class UserRepository{
   }
 
   static Future<bool> getLastAccess() async {
-    final response = await http.get(
-        Uri.https('api.osayk.com.br', 'api/Companies/GetCompanyLastAccess'),
-        headers: Header.commonHeader()
-    );
+    final response = await UserDataProvider.getLastAccess();
 
     final parsedJson = json.decode(response.body)[0];
     user.companyToken = parsedJson['token'];
@@ -65,14 +58,7 @@ class UserRepository{
 
 
   static Future<int> askNewPassword(String email) async {
-    var response = await http.post(
-      Uri.https('api.osayk.com.br', 'api/Registration/RemindPassword'),
-      headers: Header.commonHeader(),
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'subdomain': 'doutoresdacontabilidade'
-      }),
-    );
+    var response = await UserDataProvider.postForgotPassword(email);
 
     return response.statusCode;
 

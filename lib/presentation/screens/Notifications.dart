@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../Widgets/Alerts.dart';
 import '../Widgets/Drawer.dart';
 import '../widgets/LoadingDialog.dart';
 
@@ -106,11 +107,15 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
 
                 List<NotificationModel> notificationsList = [];
 
-                if(state is LoadingState){
+                if(state is NoInternetState){
+                  Alerts.noInternetError(context);
+                  return const Center(child: Text('Sem Dados'));
+                }
+                else if(state is LoadingState){
                   return LoadingDialog.showLittleLoading();
                 }
 
-                if (state is LoadedState){
+                else if (state is LoadedState){
                   notificationsList = state.notifications;
                   if(notificationsList.isNotEmpty) {
                     return RefreshIndicator(
@@ -186,11 +191,15 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
                         },
                       ),
                     );
+                  }else {
+                    return const Center(child: Text('Sem Dados'));
                   }
 
+                }else {
+                  return const Center(child: Text('Sem Dados'));
                 }
 
-                return const Center(child: Text('Sem Dados'));
+
 
               },
             ),

@@ -21,7 +21,12 @@ class LoadedStateFiles extends FilesState {
   List<Object> get props => [files];
 }
 
-class ErrorState extends FilesState {
+class ErrorStateFiles extends FilesState {
+  @override
+  List<Object> get props => [];
+}
+
+class NoInternetStateFiles extends FilesState {
   @override
   List<Object> get props => [];
 }

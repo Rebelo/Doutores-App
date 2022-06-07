@@ -13,6 +13,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:doutores_app/utils/APPColors.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../logic/cubits/blog/BlogPostsCubit.dart';
+import '../../logic/cubits/files/ImpostosCubit.dart';
+import '../../logic/cubits/notification/NotificationCubit.dart';
+import '../../logic/cubits/payments/PaymentCubit.dart';
+import '../../logic/cubits/tickets/TicketsCubit.dart';
 import '../../utils/APPConstants.dart';
 import 'ForgetPassword.dart';
 
@@ -43,23 +48,40 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final _notificationCubit = BlocProvider.of<NotificationCubit>(context);
+    final _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
+    final _paymentCubit = BlocProvider.of<PaymentCubit>(context);
+    final _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
+    final _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: APPColorPrimary,
         body: BlocListener<UserCubit, UserState>(
-          listener: (context, state) {
-            if(state is LoadingState){
+          listener: (context, state) async {
+            if(state is NoInternetState){
+              Alerts.noInternetError(context);
+            }
+            else if(state is LoadingState){
               LoadingDialog.showLoadingDialog(context);
             }
-            if (state is LoadedStateUser){
-              finish(context);
-              Navigator.pushNamed(context, '/home');
+            else if (state is LoadedStateUser){
+
+              await _paymentCubit.getPaymentsList();
+              await _notificationCubit.getNotificationsList();
+              await _impostosCubit.getImpostosList();
+              await _blogPostsCubit.getBlogPostsList();
+              await _ticketsCubit.getTicketsList();
+
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
             }
-            if (state is ErrorState){
+            else if (state is ErrorState){
               Navigator.of(context).pop();
               Alerts.showError(context, "Não conseguimos fazer login", "Não conseguimos fazer login nesse momento, tente novamente ma", "ok", Icons.access_alarms);
             }
-            if (state is WrongCredentialsState){
+            else if (state is WrongCredentialsState){
               Navigator.of(context).pop();
               Alerts.showError(context, "Dados incorretos", "Senha e/ou email estão incorretos", "ok", Icons.access_alarms);
             }
