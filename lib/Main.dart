@@ -26,7 +26,6 @@ import 'logic/cubits/blog/BlogPostsCubit.dart';
 import 'logic/cubits/files/ImpostosCubit.dart';
 import 'logic/cubits/payments/PaymentCubit.dart';
 import 'logic/cubits/tickets/TicketsCubit.dart';
-import 'logic/cubits/tickets/TicketsState.dart';
 
 void main() {
   runApp(
