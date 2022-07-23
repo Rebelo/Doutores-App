@@ -18,7 +18,6 @@ class MessagesIcon extends StatefulWidget {
 class MessagesIconState extends State<MessagesIcon> {
 
 
-
   @override
   Widget build(BuildContext context) {
     final _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
@@ -59,6 +58,8 @@ class MessagesIconState extends State<MessagesIcon> {
                       int counter = 0;
 
                       if (state is LoadedStateTickets) {
+                        counter = state.total;
+                      } else if (state is TicketsBackgroundWaitingState){
                         counter = state.total;
                       }
 

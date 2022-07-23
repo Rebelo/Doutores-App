@@ -17,6 +17,7 @@ class PaymentRepository{
   static Future<bool> getPayments() async {
 
     pagamentosList = [];
+
     final response = await PaymentDataProvider.getPayments();
 
     if(response.statusCode != 200){
@@ -50,8 +51,6 @@ class PaymentRepository{
 
   }
 
-
-  //this.id, this.dueDate, this.name, this.payDate, this.dueDateDesc, this.description, this.value, this.status, this.issueDateDesc
   static void addToList(String? id, String? name, String? ano, String? mes, String? dia, String? description, String? value, String? status, String? urlPath){
     pagamentosList.add(
         Payment(id, name, ano, mes,dia, description, value, status, urlPath)

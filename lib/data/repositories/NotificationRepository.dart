@@ -17,7 +17,7 @@ class NotificationRepository{
 
   static Future<bool> getUnpresented() async {
 
-    notifications = [ ];
+    notifications = [];
 
     try {
       final response = await NotificationDataProvider.getUnpresented();
@@ -52,11 +52,6 @@ class NotificationRepository{
       //todo
     }
 
-  }
-
-  static void addNotification(String date, String message){
-    NotificationModel n = NotificationModel(date, message);
-    notifications.add(n);
   }
 
 }

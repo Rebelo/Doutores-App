@@ -30,9 +30,11 @@ class TicketRepository {
     final response = await TicketDataProvider.getTickets();
 
     if(response.statusCode == 200) {
-        var tagObjsJsons = jsonDecode(response.body)['chats'] as List;
+        var chats = jsonDecode(response.body)['chats'] as List;
 
-        var filtered = tagObjsJsons.where((i) => i['subject'] != null).toList();
+        var body = jsonDecode(response.body);
+
+        var filtered = chats.where((i) => i['subject'] != null).toList();
 
         tickets = filtered.map((tagJson) => Ticket.fromJson(tagJson)).toList();
 

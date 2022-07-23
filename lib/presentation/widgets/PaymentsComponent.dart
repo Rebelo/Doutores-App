@@ -3,39 +3,25 @@ import 'package:doutores_app/data/repositories/PaymentRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
-//import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/PaymentModel.dart';
-import '../../utils/AppWidget.dart';
+import '../../utils/APPColors.dart';
+import 'package:url_launcher/url_launcher.dart' as ln;
 
-class PaymentsComponent extends StatefulWidget {
+class PaymentsComponent extends StatelessWidget {
   static String tag = '/PagamentosComponent';
-  final List<Payment> paymList;
+  final List<Payment> paymentList;
   final int size;
 
-  const PaymentsComponent({Key? key, required this.paymList, this.size = 0}) : super(key: key);
+  const PaymentsComponent({Key? key, required this.paymentList, this.size = 0}) : super(key: key);
 
-
-  @override
-  PaymentsComponentState createState() => PaymentsComponentState();
-}
-
-class PaymentsComponentState extends State<PaymentsComponent> {
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  Future<void> init() async {}
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
-
-  void _launchURL(url) async {
-    //if (!await launch(url)) throw 'Could not launch url';
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await ln.launchUrl(
+      url,
+      mode: ln.LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -43,35 +29,55 @@ class PaymentsComponentState extends State<PaymentsComponent> {
 
     int len = 0;
 
-    if(widget.size == 0 || widget.size > widget.paymList.length){
-      len = widget.paymList.length;
+    if(size == 0 || size > paymentList.length){
+      len = paymentList.length;
     }else{
-      len = widget.size;
+      len = size;
     }
 
-
-    return widget.paymList.isEmpty ? const Center(child: Text('Sem Dados')) : ListView.builder(
+    return paymentList.isEmpty ? const Center(child: Text('Sem Dados')) : ListView.builder(
       shrinkWrap: true,
       physics: const ScrollPhysics(),
       itemCount: len,
       padding: const EdgeInsets.all(10),
       itemBuilder: (context, index) {
-        Payment mData = widget.paymList[index];
+        Payment mData = paymentList[index];
         var width = MediaQuery.of(context).size.width;
         return Column(
           children: <Widget>[
             Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.white,
+              ),
+              padding: const EdgeInsets.only(
+                  top: 7, bottom: 7, left: 12, right: 12),
+              margin: const EdgeInsets.only(top: 2, bottom: 5),
               child: Row(
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      text(mData.mes ?? "", fontSize: 14.0),
-                      text(mData.dia ?? "", fontSize: 14.0),
+                      Text(
+                        mData.dia ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        mData.mes ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
                   Container(
-                    decoration: boxDecoration(radius: 8, showShadow: true, bgColor: Colors.white),
+                    decoration: const BoxDecoration(
+                        color: APPBackGroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(8))
+                    ),
                     margin: const EdgeInsets.only(left: 16, right: 16),
                     width: width / 6,
                     height: width / 6,
@@ -89,11 +95,17 @@ class PaymentsComponentState extends State<PaymentsComponent> {
 
                             Flexible(child: Text(mData.description ?? "0", maxLines: 2)),
                             const SizedBox(height: 0, width: 25),
-                            text("R\$"+mData.value.toString(), fontSize: 14.0)
+                            Text(
+                              "R\$" + mData.value.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
-                        text(mData.status ?? "", fontSize: 14.0),
+                        Text(mData.status ?? "", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: mData.status == "Em aberto" ? APPColorSecondary : Colors.red)),
                       ],
                     ),
                   )
@@ -103,7 +115,7 @@ class PaymentsComponentState extends State<PaymentsComponent> {
           ],
         ).onTap(
               () {
-            _launchURL(mData.urlPath);
+                _launchInBrowser(Uri.parse(mData.urlPath!));
           },
         );
       },

@@ -1,3 +1,4 @@
+
 import 'package:equatable/equatable.dart';
 
 import '../../../data/models/NotificationModel.dart';
@@ -8,13 +9,13 @@ class InitialStateNotification extends NotificationState {
   @override
   List<Object> get props => [];
 }
-class LoadingState extends NotificationState {
+class NotificationLoadingState extends NotificationState {
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends NotificationState {
-  LoadedState(this.notifications,  this.total);
+class NotificationLoadedState extends NotificationState {
+  NotificationLoadedState(this.notifications,  this.total);
 
   final List<NotificationModel> notifications;
   final int total;
@@ -23,7 +24,7 @@ class LoadedState extends NotificationState {
   List<Object> get props => [notifications,  total];
 }
 
-class ErrorState extends NotificationState {
+class NotificationErrorState extends NotificationState {
   @override
   List<Object> get props => [];
 }
@@ -32,3 +33,4 @@ class NoInternetState extends NotificationState {
   @override
   List<Object> get props => [];
 }
+

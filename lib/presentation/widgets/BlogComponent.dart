@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../data/models/BlogModel.dart';
-import '../../utils/APPColors.dart';
 import '../../utils/AppWidget.dart';
+import 'package:url_launcher/url_launcher.dart' as ln;
 
 
 class BlogComponent extends StatelessWidget {
@@ -13,8 +13,13 @@ class BlogComponent extends StatelessWidget {
 
   const BlogComponent({Key? key, required this.blogList}) : super(key: key);
 
-  void _launchURL(url) async {
-    if (!await launch(url)) throw 'Could not launch url';
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await ln.launchUrl(
+      url,
+      mode: ln.LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
   }
 
 
@@ -69,7 +74,7 @@ class BlogComponent extends StatelessWidget {
             ],
           ).onTap(
                 () {
-              _launchURL(mData.url);
+                  _launchInBrowser(Uri.parse(mData.url!));
             },
           ),
         );

@@ -5,7 +5,7 @@ import '../../../data/models/TicketModel.dart';
 
 abstract class TicketsState extends Equatable {}
 
-class InitialState extends TicketsState {
+class InitialStateTickets extends TicketsState {
   @override
   List<Object> get props => [];
 }
@@ -27,10 +27,22 @@ class LoadedStateTickets extends TicketsState {
   List<Object> get props => [tickets, total, groups];
 }
 
-class ErrorState extends TicketsState {
+class ErrorStateTickets extends TicketsState {
 
   @override
   List<Object> get props => [];
+}
+
+class TicketsBackgroundWaitingState extends TicketsState {
+
+  TicketsBackgroundWaitingState(this.tickets, this.total, this.groups);
+
+  final List<Ticket> tickets;
+  final int total;
+  final List<Map> groups;
+
+  @override
+  List<Object> get props => [tickets, total, groups];
 }
 
 class NoInternetStateTickets extends TicketsState {

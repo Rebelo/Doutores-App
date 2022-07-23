@@ -1,15 +1,14 @@
 
 import 'package:doutores_app/data/repositories/NotificationRepository.dart';
-import 'package:doutores_app/data/models/NotificationModel.dart';
 import 'package:doutores_app/logic/cubits/notification/NotificationCubit.dart';
 import 'package:doutores_app/logic/cubits/notification/NotificationState.dart';
-import 'package:doutores_app/presentation/widgets/NotificationComponent.dart';
 import 'package:doutores_app/utils/APPColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../data/models/NotificationModel.dart';
 import '../Widgets/Alerts.dart';
 import '../Widgets/Drawer.dart';
 import '../widgets/LoadingDialog.dart';
@@ -29,7 +28,6 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
 
     final _notificationCubit = BlocProvider.of<NotificationCubit>(context);
-    if(_notificationCubit.state is InitialStateNotification)_notificationCubit.getNotificationsList();
 
     Future<void> _pullRefresh() async {
       _notificationCubit.getNotificationsList();
@@ -40,7 +38,7 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _scaffoldKey,
-        appBar: AppBar(
+      appBar: AppBar(
           title: const Text('Notificações',  style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -111,11 +109,11 @@ class CPNotificationFragmentState extends State<NotificationScreen> {
                   Alerts.noInternetError(context);
                   return const Center(child: Text('Sem Dados'));
                 }
-                else if(state is LoadingState){
+                else if(state is NotificationLoadingState){
                   return LoadingDialog.showLittleLoading();
                 }
 
-                else if (state is LoadedState){
+                else if (state is NotificationLoadedState){
                   notificationsList = state.notifications;
                   if(notificationsList.isNotEmpty) {
                     return RefreshIndicator(

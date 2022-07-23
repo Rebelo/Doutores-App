@@ -3,7 +3,6 @@
 
 import 'package:doutores_app/logic/cubits/user/UserCubit.dart';
 import 'package:doutores_app/logic/cubits/user/UserState.dart';
-import 'package:doutores_app/presentation/screens/Home.dart';
 import 'package:doutores_app/presentation/widgets/Alerts.dart';
 import 'package:doutores_app/presentation/widgets/LoadingDialog.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,7 @@ import '../../utils/APPConstants.dart';
 import 'ForgetPassword.dart';
 
 class LoginScreen extends StatefulWidget {
+  static var tag = "/";
 
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -36,12 +36,11 @@ class LoginScreenState extends State<LoginScreen> {
   FocusNode emailFocusNode = FocusNode();
   FocusNode passWordFocusNode = FocusNode();
 
-  @override
-  void dispose() {
-    super.dispose();
-    emailFocusNode.dispose();
-    passWordFocusNode.dispose();
-  }
+  late NotificationCubit _notificationCubit;
+  late ImpostosCubit _impostosCubit;
+  late PaymentCubit _paymentCubit;
+  late BlogPostsCubit _blogPostsCubit;
+  late TicketsCubit _ticketsCubit;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -49,11 +48,11 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final _notificationCubit = BlocProvider.of<NotificationCubit>(context);
-    final _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
-    final _paymentCubit = BlocProvider.of<PaymentCubit>(context);
-    final _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
-    final _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
+    _notificationCubit = BlocProvider.of<NotificationCubit>(context);
+    _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
+    _paymentCubit = BlocProvider.of<PaymentCubit>(context);
+    _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
+    _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -228,4 +227,11 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  @override
+  void dispose(){
+    emailFocusNode.dispose();
+    passWordFocusNode.dispose();
+    super.dispose();
+  }
+
 }

@@ -1,55 +1,40 @@
-import 'dart:io';
 
 import 'package:doutores_app/data/models/FileModel.dart';
 import 'package:doutores_app/utils/APPColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
-//import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as ln;
 
-import '../../utils/AppWidget.dart';
-
-class FileComponent extends StatefulWidget {
+class FileComponent extends StatelessWidget {
   static String tag = '/DriveComponent';
+
+  //FileComponent(this.size, this.filesList);
+  const FileComponent({Key? key, required this.filesList, this.size = 0}) : super(key: key);
+
   final List<File> filesList;
   final int size;
 
-  const FileComponent({Key? key, required this.filesList, this.size = 0}) : super(key: key);
-
-  @override
-  FileComponentState createState() => FileComponentState();
-}
-
-class FileComponentState extends State<FileComponent> {
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  Future<void> init() async {}
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
-
-  void _launchURL(url) async {
-    //if (!await launch(url)) throw 'Could not launch url';
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await ln.launchUrl(
+      url,
+      mode: ln.LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     int len = 0;
 
-    if(widget.size == 0 || widget.size > widget.filesList.length){
-      len = widget.filesList.length;
-    }else{
-      len = widget.size;
+    if (size == 0 || size > filesList.length) {
+      len = filesList.length;
+    } else {
+      len = size;
     }
 
-    widget.filesList.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
+    filesList.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
 
     return ListView.builder(
       shrinkWrap: true,
@@ -57,16 +42,20 @@ class FileComponentState extends State<FileComponent> {
       itemCount: len,
       padding: const EdgeInsets.all(10),
       itemBuilder: (context, index) {
-        File mData = widget.filesList[index];
-        var width = MediaQuery.of(context).size.width;
+        File mData = filesList[index];
+        var width = MediaQuery
+            .of(context)
+            .size
+            .width;
         return Column(
           children: <Widget>[
             Container(
-              decoration:BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.white,
               ),
-              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
+              padding: const EdgeInsets.only(
+                  top: 7, bottom: 7, left: 12, right: 12),
               margin: const EdgeInsets.only(top: 2, bottom: 5),
               child: Row(
                 children: <Widget>[
@@ -90,13 +79,17 @@ class FileComponentState extends State<FileComponent> {
                   ),
                   Container(
                     decoration: const BoxDecoration(
-                      color: APPBackGroundColor, borderRadius: BorderRadius.all(Radius.circular(8))
+                        color: APPBackGroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(8))
                     ),
                     margin: const EdgeInsets.only(left: 16, right: 16),
                     width: width / 6,
                     height: width / 6,
                     padding: EdgeInsets.all(width / 80),
-                    child:  SvgPicture.asset("assets/images/cash.svg", height: width / 10, width: width / 10, fit: BoxFit.cover,),
+                    child: SvgPicture.asset(
+                      "assets/images/cash.svg", height: width / 10,
+                      width: width / 10,
+                      fit: BoxFit.cover,),
 
                   ),
                   Expanded(
@@ -115,7 +108,7 @@ class FileComponentState extends State<FileComponent> {
                             ),
                             const SizedBox(height: 0, width: 15),
                             Text(
-                              "R\$"+mData.value.toString(),
+                              "R\$" + mData.value.toString(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -124,7 +117,11 @@ class FileComponentState extends State<FileComponent> {
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
-                        Text("Ref.: " + mData.referenceMonth! + "/" + mData.referenceYear!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: APPColorSecondary))
+                        Text("Ref.: " + mData.referenceMonth! + "/" +
+                            mData.referenceYear!, style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: APPColorSecondary))
                       ],
                     ),
                   )
@@ -134,17 +131,20 @@ class FileComponentState extends State<FileComponent> {
           ],
         ).onTap(
               () {
-            _launchURL("https://api.osayk.com.br/api/Companies/DownloadDocumentDrive/?id=" + mData.urlPath! + "&fullPath=||||EMPRESA&preview=false");
+                _launchInBrowser(Uri.parse("https://api.osayk.com.br/api/Companies/DownloadDocumentDrive/?id=" +
+                    mData.urlPath! +
+                    "&fullPath=||||EMPRESA&preview=false"));
           },
         );
       },
       /*separatorBuilder: (context, index) {
-        //if(index != widget.postsList!.length -1 ) {
-          return const Divider();
-        //} else {
-          //return Container();
-        //}
-      },*/
+      //if(index != widget.postsList!.length -1 ) {
+        return const Divider();
+      //} else {
+        //return Container();
+      //}
+    },*/
     );
   }
 }
+

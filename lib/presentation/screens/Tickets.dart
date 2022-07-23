@@ -39,7 +39,7 @@ class TicketScreenState extends State<TicketsScreen> {
   Widget build(BuildContext context) {
 
     _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
-    if(_ticketsCubit.state is InitialState)_ticketsCubit.getTicketsList();
+    if(_ticketsCubit.state is InitialStateTickets)_ticketsCubit.getTicketsList();
 
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -82,7 +82,16 @@ class TicketScreenState extends State<TicketsScreen> {
                   return LoadingDialog.showLittleLoading();
                 }
 
-                else if (state is LoadedStateTickets){
+                else if (state is TicketsBackgroundWaitingState){
+                  ticketsList = state.tickets;
+
+                  return RefreshIndicator(
+                    onRefresh: () => _pullRefresh(),
+                    child: TicketComponent(
+                        ticketsList: ticketsList
+                    ),
+                  );
+                }else if (state is LoadedStateTickets){
                   ticketsList = state.tickets;
 
                   return RefreshIndicator(

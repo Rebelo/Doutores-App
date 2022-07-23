@@ -1,17 +1,15 @@
 
 import 'package:doutores_app/logic/cubits/blog/BlogPostsCubit.dart';
 import 'package:doutores_app/logic/cubits/blog/BlogPostsState.dart';
+import 'package:doutores_app/logic/cubits/notification/NotificationCubit.dart';
 import 'package:doutores_app/logic/cubits/payments/PaymentState.dart';
 import 'package:doutores_app/logic/cubits/payments/PaymentCubit.dart';
 import 'package:doutores_app/logic/cubits/files/FilesState.dart';
 import 'package:doutores_app/logic/cubits/files/ImpostosCubit.dart';
-import 'package:doutores_app/logic/cubits/tickets/TicketsCubit.dart';
-import 'package:doutores_app/logic/cubits/tickets/TicketsState.dart';
-import '../../logic/cubits/notification/NotificationCubit.dart';
-import '../../logic/cubits/notification/NotificationState.dart';
 
 import 'package:doutores_app/data/models/PaymentModel.dart';
 import 'package:doutores_app/data/models/FileModel.dart';
+import 'package:doutores_app/logic/cubits/tickets/TicketsCubit.dart';
 import 'package:doutores_app/presentation/widgets/BlogComponent.dart';
 import 'package:doutores_app/presentation/widgets/FileComponent.dart';
 import 'package:doutores_app/presentation/widgets/PaymentsComponent.dart';
@@ -29,7 +27,7 @@ import '../widgets/NotificationIcon.dart';
 import 'package:doutores_app/presentation/widgets/Drawer.dart';
 
 class HomeScreen extends StatefulWidget {
-  static var tag = "/";
+  static var tag = "/home";
 
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -37,25 +35,33 @@ class HomeScreen extends StatefulWidget {
   HomeScreenState createState() => HomeScreenState();
 }
 
-int currentIndex = 0;
-
 class HomeScreenState extends State<HomeScreen> {
+
+  var _impostosCubit = ImpostosCubit();
+  var _paymentCubit = PaymentCubit();
+  var _blogPostsCubit = BlogPostsCubit();
+  var _notificationCubit = NotificationCubit();
+  var _ticketsCubit = TicketsCubit();
+
 
   @override
   Widget build(BuildContext context) {
 
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-    final _notificationCubit = BlocProvider.of<NotificationCubit>(context);
-    final _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
-    final _paymentCubit = BlocProvider.of<PaymentCubit>(context);
-    final _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
-    final _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
 
-    if(_notificationCubit.state is InitialStateNotification)_notificationCubit.getNotificationsList();
-    if(_impostosCubit.state is InitialStateFiles)_impostosCubit.getImpostosList();
-    if(_paymentCubit.state is InitialStatePayment)_paymentCubit.getPaymentsList();
-    if(_blogPostsCubit.state is InitialStateBlog)_blogPostsCubit.getBlogPostsList();
-    if(_ticketsCubit.state is InitialState)_ticketsCubit.getTicketsList();
+    _impostosCubit = BlocProvider.of<ImpostosCubit>(context);
+    _paymentCubit = BlocProvider.of<PaymentCubit>(context);
+    _blogPostsCubit = BlocProvider.of<BlogPostsCubit>(context);
+    _notificationCubit = BlocProvider.of<NotificationCubit>(context);
+    _ticketsCubit = BlocProvider.of<TicketsCubit>(context);
+
+    Future<void> _pullRefresh() async {
+      _paymentCubit.getPaymentsList();
+      _blogPostsCubit.getBlogPostsList();
+      _impostosCubit.getImpostosList();
+      _notificationCubit.getNotificationsList();
+      _ticketsCubit.getTicketsList();
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -89,68 +95,110 @@ class HomeScreenState extends State<HomeScreen> {
           right: true,
           bottom: true,
           minimum: const EdgeInsets.all(2.0),
-          child: Observer(
-            builder: (_) => Stack(
+          child: RefreshIndicator(
+            onRefresh: () => _pullRefresh(),
+            child: Expanded(
+                    //color: Colors.lightBlue[0],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /*Padding(
+                            padding: const EdgeInsets.only(left: 10.0, top: 15.0),
+                            child: text("Mensalidades", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
+                          ),*/
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Mensalidades', style: boldTextStyle(size: 24)),
+                              Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
+                                    () {
+                                  Navigator.pushNamed(context, '/payment');
+                                },
+                              ),
+                            ],
+                          ).paddingOnly(left: 16, right: 16, top: 20, bottom: 20),
 
-              fit: StackFit.expand,
-              children: [
-                Expanded(
-                  //color: Colors.lightBlue[0],
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /*Padding(
-                          padding: const EdgeInsets.only(left: 10.0, top: 15.0),
-                          child: text("Mensalidades", textColor: Colors.black, fontFamily: 'Bold', fontSize: 24.0),
-                        ),*/
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Mensalidades', style: boldTextStyle(size: 24)),
-                            Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
-                                  () {
-                                Navigator.pushNamed(context, '/payment');
-                              },
-                            ),
-                          ],
-                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 20),
+                          BlocBuilder<PaymentCubit, PaymentState>(
+                            bloc: _paymentCubit,
+                            builder: (context, state) {
 
-                        BlocBuilder<PaymentCubit, PaymentState>(
-                          bloc: _paymentCubit,
-                          builder: (context, state) {
+                              List<Payment> paymentsList = [];
 
-                            List<Payment> paymentsList = [];
+                              if(state is NoInternetStatePayment){
+                                Alerts.noInternetError(context);
+                                return const Center(child: Text('Sem Dados'));
+                              }
+                              else if (state is LoadingStatePayment){
+                                return LoadingDialog.showLittleLoading();
+                              }
 
-                            if(state is NoInternetStatePayment){
-                              Alerts.noInternetError(context);
-                              return const Center(child: Text('Sem Dados'));
-                            }
-                            else if (state is LoadingStatePayment){
-                              return LoadingDialog.showLittleLoading();
-                            }
+                              else if (state is LoadedStatePayment){
+                                paymentsList = state.payments;
+                                return paymentsList.isEmpty ? const Center(child: Text('Sem Dados')) : PaymentsComponent(paymentList: paymentsList, size: 3);
 
-                            else if (state is LoadedStatePayment){
-                              paymentsList = state.payments;
+                              }
+                              else if(state is ErrorStatePayment){
+                                return const Center(
+                                    child: Text(
+                                        'Não foi possível carregar esses dados',
+                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+                                );
+                              }
 
-                              return paymentsList.isNotEmpty ? const Center(child: Text('Sem Dados')) : PaymentsComponent(paymList: paymentsList, size: 3);
+                              else {
+                                return paymentsList.isEmpty ? const Center(child: Text('Sem Dados')) : PaymentsComponent(paymentList: paymentsList, size: 3);
+                              }
 
-                            }
-                            else if(state is ErrorStatePayment){
-                              return const Center(
-                                  child: Text(
+                            },
+                          ),10.height,
+                          /*const Divider(
+                            color: Colors.black26,
+                            thickness: 0,
+                            height: 5,
+                            indent: 50,
+                            endIndent: 50,
+                          ),*/
+                          10.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Impostos', style: boldTextStyle(size: 24)),
+                              Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
+                                    () {
+                                  Navigator.pushNamed(context, '/files');
+                                },
+                              ),
+                            ],
+                          ).paddingOnly(left: 16, right: 16, top: 16, bottom: 0),
+                          BlocBuilder<ImpostosCubit, FilesState>(
+                            bloc: _impostosCubit,
+                            builder: (context, state) {
+
+                              List<File> filesList = [];
+
+                              if (state is LoadingStateFiles){
+                                return LoadingDialog.showLittleLoading();
+                              }
+
+                              else if (state is LoadedStateFiles){
+                                filesList = state.files;
+                                return filesList.isNotEmpty ? FileComponent(filesList: filesList, size: 3) : const Center(child: Text('Sem Dados'));
+                              }
+                              else if(state is ErrorStateFiles){
+                                return const Center(
+                                    child: Text(
                                       'Não foi possível carregar esses dados',
-                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
 
-                              );
-                            }
+                                );
+                              }
+                              else {
+                                return const Center(child: Text('Sem Dados'));
 
-                            else {
-                              return const Center(child: Text('Sem Dados'));
-                            }
-
-                          },
-                        ),10.height,
+                              }
+                            },
+                          ),2.height,
                         /*const Divider(
                           color: Colors.black26,
                           thickness: 0,
@@ -158,108 +206,61 @@ class HomeScreenState extends State<HomeScreen> {
                           indent: 50,
                           endIndent: 50,
                         ),*/
-                        10.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Impostos', style: boldTextStyle(size: 24)),
-                            Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
-                                  () {
-                                Navigator.pushNamed(context, '/files');
-                              },
-                            ),
-                          ],
-                        ).paddingOnly(left: 16, right: 16, top: 16, bottom: 0),
-                        BlocBuilder<ImpostosCubit, FilesState>(
-                          bloc: _impostosCubit,
-                          builder: (context, state) {
+                        5.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Blog', style: boldTextStyle(size: 24)),
+                              Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
+                                    () {
+                                      Navigator.pushNamed(context, '/blog');
+                                },
+                              ),
+                            ],
+                          ).paddingOnly(left: 16, right: 16, top: 20, bottom: 0),
+                          BlocBuilder<BlogPostsCubit, BlogPostsState>(
+                            bloc: _blogPostsCubit,
+                            builder: (context, state) {
 
-                            List<File> filesList = [];
+                              List<Blog> blogsList = [];
 
-                            if (state is LoadingStateFiles){
-                              return LoadingDialog.showLittleLoading();
-                            }
+                              if(state is LoadingStateBlog){
+                                return LoadingDialog.showLittleLoading();
+                              }
 
-                            else if (state is LoadedStateFiles){
-                              filesList = state.files;
-                              return filesList.isNotEmpty ? FileComponent(filesList: filesList, size: 3) : const Center(child: Text('Sem Dados'));
-                            }
-                            else if(state is ErrorStateFiles){
-                              return const Center(
-                                  child: Text(
-                                    'Não foi possível carregar esses dados',
-                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+                              else if (state is LoadedStateBlog){
+                                blogsList = state.blogSamples;
+                                return blogsList.isNotEmpty ? BlogComponent(blogList: blogsList) : const Center(child: Text('Sem Dados'));
+                              }
 
-                              );
-                            }
-                            else {
-                              return const Center(child: Text('Sem Dados'));
+                              else if (state is InitialStateBlog){
+                                return const Center(child: Text('Sem Dados'));
+                              }
 
-                            }
-                          },
-                        ),2.height,
-                      /*const Divider(
-                        color: Colors.black26,
-                        thickness: 0,
-                        height: 5,
-                        indent: 50,
-                        endIndent: 50,
-                      ),*/
-                      5.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Blog', style: boldTextStyle(size: 24)),
-                            Text('Mostrar Mais', style: boldTextStyle(color: APPColorSecondary)).onTap(
-                                  () {
-                                    Navigator.pushNamed(context, '/blog');
-                              },
-                            ),
-                          ],
-                        ).paddingOnly(left: 16, right: 16, top: 20, bottom: 0),
-                        BlocBuilder<BlogPostsCubit, BlogPostsState>(
-                          bloc: _blogPostsCubit,
-                          builder: (context, state) {
+                              else if (state is ErrorStateBlog){
+                                return const Center(
+                                    child: Text(
+                                      'Não foi possível carregar esses dados',
+                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
 
-                            List<Blog> blogsList = [];
+                                );
+                              }
 
-                            if(state is LoadingStateBlog){
-                              return LoadingDialog.showLittleLoading();
-                            }
-
-                            else if (state is LoadedStateBlog){
-                              blogsList = state.blogSamples;
-                              return blogsList.isNotEmpty ? BlogComponent(blogList: blogsList) : const Center(child: Text('Sem Dados'));
-                            }
-
-                            else if (state is InitialStateBlog){
-                              return const Center(child: Text('Sem Dados'));
-                            }
-
-                            else if (state is ErrorStateBlog){
-                              return const Center(
-                                  child: Text(
-                                    'Não foi possível carregar esses dados',
-                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
-
-                              );
-                            }
-
-                            else {
-                              return const Center(child: Text('Sem Dados'));
-                            }
-
-                          },
-                        ),
-                      ],
+                              else {
+                                return const Center(child: Text('Sem Dados'));
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
           ),
         ),
+      
       drawer: const T2Drawer(),
-    );
+
+  );
+
   }
 }

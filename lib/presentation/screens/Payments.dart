@@ -88,7 +88,7 @@ class PaymentsScreenState extends State<PaymentsScreen> {
                       return RefreshIndicator(
                         onRefresh: () => _pullRefresh(),
                         child: PaymentsComponent(
-                          paymList: paymentsList,
+                          paymentList: paymentsList,
                         ),
                       );
                     }

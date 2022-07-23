@@ -23,6 +23,3 @@ class GetMessagesCubit extends Cubit<GetMessagesState> {
 
 }
 
-
-class TickestState {
-}

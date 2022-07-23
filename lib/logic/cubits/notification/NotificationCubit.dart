@@ -1,16 +1,21 @@
 
 
-
 import 'package:doutores_app/data/repositories/NotificationRepository.dart';
 import 'package:doutores_app/logic/cubits/notification/NotificationState.dart';
+import 'package:doutores_app/logic/cubits/tickets/TicketsState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/Utils.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
-  NotificationCubit() : super(InitialStateNotification()) {
-    //getNotificationsList();
+  NotificationCubit() : super(InitialStateNotification());
+
+  @override
+  void onChange(Change<NotificationState> change){
+    super.onChange(change);
+    var debug = 1;
   }
+
 
   Future getNotificationsList() async {
     try {
@@ -18,13 +23,13 @@ class NotificationCubit extends Cubit<NotificationState> {
         emit(NoInternetState());
 
       }else {
-        emit(LoadingState());
-        await NotificationRepository.getUnpresented() ? emit(LoadedState(
+        emit(NotificationLoadingState());
+        await NotificationRepository.getUnpresented() ? emit(NotificationLoadedState(
             NotificationRepository.notifications,
-            NotificationRepository.notifications.length)) : emit(ErrorState());
+            NotificationRepository.notifications.length)) : emit(NotificationErrorState());
       }
     } catch (e) {
-      emit(ErrorState());
+      emit(NotificationErrorState());
     }
   }
 

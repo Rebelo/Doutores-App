@@ -7,7 +7,13 @@ import '../../../utils/Utils.dart';
 import 'TicketsState.dart';
 
 class TicketsCubit extends Cubit<TicketsState> {
-  TicketsCubit() : super(InitialState());
+  TicketsCubit() : super(InitialStateTickets());
+
+  @override
+  void onChange(Change<TicketsState> change){
+    super.onChange(change);
+    var segura = 1;
+  }
 
   Future getTicketsList() async {
     try {
@@ -16,13 +22,32 @@ class TicketsCubit extends Cubit<TicketsState> {
 
       }else {
         emit(LoadingStateTickets());
-        await TicketRepository.getTickets() ? emit(LoadedStateTickets(
-            TicketRepository.tickets!, TicketRepository.totalUnread,
-            TicketRepository.groupAccountants)) : emit(ErrorState());
+        await TicketRepository.getTickets() ?
+          emit(LoadedStateTickets(TicketRepository.tickets!, TicketRepository.totalUnread, TicketRepository.groupAccountants)) :
+          emit(ErrorStateTickets());
       }
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorStateTickets());
     }
+  }
+
+  Future backgroundFunc() async {
+    try {
+      Future.delayed(const Duration(milliseconds: 5000), () async {
+        if(await Utils.isConnected() && await TicketRepository.getTickets()) {
+          emit(LoadedStateTickets(TicketRepository.tickets!, TicketRepository.totalUnread, TicketRepository.groupAccountants));
+        } else {
+          emit(ErrorStateTickets());
+        }
+      });
+
+    } catch (e) {
+      emit(ErrorStateTickets());
+    }
+  }
+
+  void sendToWait(){
+    emit(TicketsBackgroundWaitingState(TicketRepository.tickets!, TicketRepository.totalUnread, TicketRepository.groupAccountants));
   }
 
   void getCompanyGroups() async {
@@ -31,7 +56,6 @@ class TicketsCubit extends Cubit<TicketsState> {
   }
 
 
-}
 
-class TickestState {
+
 }

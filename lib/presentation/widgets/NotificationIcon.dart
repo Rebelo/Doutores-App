@@ -59,8 +59,9 @@ class NotificationIconState extends State<NotificationIcon> {
 
                       int counter = 0;
 
-                      if (state is LoadedState) {
+                      if (state is NotificationLoadedState) {
                         counter = state.total;
+
                       }
 
                       return Text(
